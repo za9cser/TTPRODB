@@ -1,8 +1,8 @@
 ﻿namespace TTPRODB.BuisnessLogic.Entities
 {
-    public class Blade
+    public class Blade : Item
     {
-        public new int Id { get; set; }
+        public int Id { get; set; }
         public double Speed { get; set; }
         public double Control { get; set; }
         public double Stiffness { get; set; }

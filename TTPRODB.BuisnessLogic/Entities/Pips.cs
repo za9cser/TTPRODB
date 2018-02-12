@@ -2,7 +2,7 @@
 {
     public class Pips : Item
     {
-        public new int Id { get; set; }
+        public int Id { get; set; }
         public double Speed { get; set; }
         public double Spin { get; set; }
         public double Control { get; set; }

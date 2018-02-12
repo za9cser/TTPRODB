@@ -1,6 +1,6 @@
 ﻿namespace TTPRODB.BuisnessLogic.Entities
 {
-    public class Item
+    public abstract class Item
     {
         public int ItemId { get; set; }
         public string Name { get; set; }

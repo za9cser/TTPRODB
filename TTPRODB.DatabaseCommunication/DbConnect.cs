@@ -1,31 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace TTPRODB.DatabaseCommunication
 {
     public class DbConnect
     {
-        private string dbConnectionString;
-        public SqlConnection DbConnection;
-        private string dbName;
-
-        public DbConnect()
-        {
-            // init database's conection parameters  
-            dbName = "TTPRODB";
-            dbConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename =|DataDirectory|\TTPRODB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            ConnecToDatabase();
-        }
+        private static string dbConnectionString = @"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename =|DataDirectory|\TTPRODB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private static string dbName = "TTPRODB";        
 
         // connect to database
-        public void ConnecToDatabase()
+        public static void ValidateDatabase()
         {
             // init mdf file parameters
             string outputFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -40,7 +26,7 @@ namespace TTPRODB.DatabaseCommunication
         }
 
         // create local database
-        public void CreateDatabase(string dbFileName)
+        public static void CreateDatabase(string dbFileName)
         {
             try
             {
@@ -72,7 +58,7 @@ namespace TTPRODB.DatabaseCommunication
         }
 
         // detach database
-        public void DetachDatabase(SqlConnection connection)
+        public static void DetachDatabase(SqlConnection connection)
         {
             try
             {
@@ -89,7 +75,7 @@ namespace TTPRODB.DatabaseCommunication
         }
 
         // execute Query to database
-        public SqlDataReader[] ExecuteQuery(params string[] queries)
+        public static SqlDataReader[] ExecuteQuery(params string[] queries)
         {
             SqlDataReader[] resultSqlDataReaders = new SqlDataReader[queries.Length];
             using (var connection = new SqlConnection(dbConnectionString))

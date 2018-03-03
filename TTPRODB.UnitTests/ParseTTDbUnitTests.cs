@@ -20,8 +20,7 @@ namespace TTPRODB.UnitTests
             ParseTTDb parse = new ParseTTDb();
             HtmlNode root = PageData.GetPageRootNode(url);
             // tables with items urls
-            var itemsTables = root.Descendants()
-                .Where(x => x.GetAttributeValue("class", "").Equals("specscompare no-side-border-xxs")).ToList();
+            var itemsTables = root.Descendants().Where(x => x.GetAttributeValue("class", "").Equals("specscompare no-side-border-xxs")).ToList();
 
             // items count
             int itemsCount = parse.GetItemsCount(itemsTables);

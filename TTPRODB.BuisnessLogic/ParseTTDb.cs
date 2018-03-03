@@ -60,7 +60,7 @@ namespace TTPRODB.BuisnessLogic
                 var itemsUrls = itemsTables[i].Descendants("a").ToList();
                 foreach (var itemUrl in itemsUrls)
                 {
-                    // get full items's url
+                    // get full item's url
                     url = site + itemUrl.Attributes["href"].Value;
                     itemsList.Add(ParseItem(url, producerId));
                 }

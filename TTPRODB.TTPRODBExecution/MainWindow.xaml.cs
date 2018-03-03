@@ -23,6 +23,7 @@ namespace TTPRODB.TTPRODBExecution
         public MainWindow()
         {
             InitializeComponent();
+            
         }
     }
 }

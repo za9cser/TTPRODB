@@ -1,14 +1,26 @@
-﻿namespace TTPRODB.BuisnessLogic.Entities
+﻿using System.Data.Linq.Mapping;
+
+namespace TTPRODB.BuisnessLogic.Entities
 {
+    [Table(Name = "Items")]
     public abstract class Item
     {
+        
         public int ItemId { get; set; }
+
+        
         public string Name { get; set; }
+
+        
         public string Url { get; set; }
+
+        
         public int ProducerId { get; set; }
+
+        
         public int Ratings { get; set; }
 
-        public Item(int itemId, string name, string url, int producerId, int ratings)
+        protected Item(int itemId, string name, string url, int producerId, int ratings)
         {
             ItemId = itemId;
             Name = name;
@@ -17,6 +29,6 @@
             Ratings = ratings;
         }
 
-        public Item() { }
+        protected Item() { }
     }
 }

@@ -1,29 +1,53 @@
-﻿namespace TTPRODB.BuisnessLogic.Entities
+﻿using System.Data.Linq.Mapping;
+
+namespace TTPRODB.BuisnessLogic.Entities
 {
+    
     public class Blade : Item
     {
         public int Id { get; set; }
-        public double Speed { get; set; }
-        public double Control { get; set; }
-        public double Stiffness { get; set; }
-        public double Hardness { get; set; }
-        public double Consistency { get; set; }
-        public double Overall { get; set; }        
 
-        public Blade() { }
-        //public Blade(MySqlDataReader reader)
-        //{
-        //    Id = reader.GetInt32(0);
-        //    Url = reader.GetString(1);
-        //    Producer_ID = reader.GetInt32(2);
-        //    Name = reader.GetString(3);
-        //    Speed = reader.GetDouble(4);
-        //    Control = reader.GetDouble(5);
-        //    Stiffness = reader.GetDouble(6);
-        //    Hardness = reader.GetDouble(7);
-        //    Consistency = reader.GetDouble(8);
-        //    Overall = reader.GetDouble(9);
-        //    Ratings = reader.GetInt32(10);
-        //}
+        
+        public double Speed { get; set; }
+
+        
+        public double Control { get; set; }
+
+        
+        public double Stiffness { get; set; }
+
+        
+        public double Hardness { get; set; }
+
+        
+        public double Consistency { get; set; }
+
+        
+        public double Overall { get; set; }
+
+        public Blade(int itemId, string name, string url, int producerId, int ratings, int id,
+            double speed, double control, double stiffness, double hardness, double consistency, double overall)
+            : base(itemId, name, url, producerId, ratings)
+        {
+            Id = id;
+            Speed = speed;
+            Control = control;
+            Stiffness = stiffness;
+            Hardness = hardness;
+            Consistency = consistency;
+            Overall = overall;
+        }
+
+        public Blade(int id, double speed, double control, double stiffness, double hardness,
+            double consistency, double overall)
+        {
+            Id = id;
+            Speed = speed;
+            Control = control;
+            Stiffness = stiffness;
+            Hardness = hardness;
+            Consistency = consistency;
+            Overall = overall;
+        }
     }
 }

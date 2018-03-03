@@ -26,6 +26,34 @@ namespace TTPRODB.DatabaseCommunication
             { 
                 CreateDatabase(dbFileName);
             }
+
+            // Check db structure
+
+            // Check db data
+            CheckDbData();
+        }
+
+        /// <summary>
+        /// Checks data exists
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckDbData()
+        {
+            bool checkFlag = true;
+            using (var connection = new SqlConnection(DbConnectionString))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Count(*) FROM Items";
+                    if ((int) cmd.ExecuteScalar() == 0)
+                    {
+                        checkFlag = false;
+                    }
+                }
+            }
+
+            return checkFlag;
         }
 
         // create local database

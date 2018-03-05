@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
+using System.Text;
 using TTPRODB.BuisnessLogic.Entities;
 
 namespace TTPRODB.DatabaseCommunication
@@ -55,7 +57,7 @@ namespace TTPRODB.DatabaseCommunication
                 using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "INSERT INTO Producers (Id, Name) VALUES (@Id, @Name)";
+                    cmd.CommandText = "INSERT INTO Producer (Id, Name) VALUES (@Id, @Name)";
                     cmd.Parameters.Add("@Id", DbType.Int32);
                     cmd.Parameters.Add("@Name", DbType.String);
 
@@ -69,26 +71,81 @@ namespace TTPRODB.DatabaseCommunication
             }
         }
 
+        /// <summary>
+        /// Insert inventory into Db
+        /// </summary>
+        /// <param name="itemsList">List of inventory</param>
         public static void InsertItems(List<dynamic> itemsList)
         {
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
             {
                 connection.Open();
+                // create two command to insert into Item table and specific inventory table
                 using (SqlCommand cmd1 = connection.CreateCommand(),
                        cmd2 = connection.CreateCommand())
                 {
+                    // build query into Item table
                     cmd1.CommandType = CommandType.Text;
-                    cmd1.CommandText = "INSERT INTO Items (ID, Name, Producer_ID, Ratings) VALUES (@ItemId, @Name, @Url, @ProducerId, @Ratings)";
+                    cmd1.CommandText = "INSERT INTO Item (ID, Name, Producer_ID, Ratings) VALUES (@ItemId, @Name, @Url, @ProducerId, @Ratings)";
 
                     foreach (PropertyInfo itemProperty in itemProperties)
                     {
-                        cmd1.Parameters.Add("@" + itemProperty.Name);
+                        cmd1.Parameters.Add($"@{itemProperty.Name}");
                     }
 
-                    
+                    PropertyInfo[] inventoryProperties = BuidInventoryInsertQuery(itemsList, cmd2);
 
+                    // 
+                    foreach (dynamic item in itemsList)
+                    {
+                        // init isert into Item command parrameters value
+                        Item localItem = (Item)item;
+                        for (int i = 0; i < cmd1.Parameters.Count; i++)
+                        {
+                            cmd1.Parameters[i].Value = itemProperties[i].GetValue(localItem);
+                        }
+
+                        // init isert into inventory command parrameters value
+                        for (int i = 0; i < cmd2.Parameters.Count - 1; i++)
+                        {
+                            cmd2.Parameters[i].Value = inventoryProperties[i].GetValue(item);
+                        }
+                        // init Item_Id parametr
+                        cmd2.Parameters[cmd2.Parameters.Count - 1].Value = item.ItemId;
+
+                        // Execute queries
+                        cmd1.ExecuteNonQuery();
+                        cmd2.ExecuteNonQuery();
+                    }
                 }
             }
+        }
+
+        private static PropertyInfo[] BuidInventoryInsertQuery(List<dynamic> itemsList, SqlCommand cmd)
+        {
+            // Get inventory type and properties
+            Type inventoryType = itemsList[0].GetType();
+            string table = inventoryType.Name;
+            PropertyInfo[] inventoryProperties = inventoryType.GetProperties();
+            // build query into invetory table and init command parameters
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = $"INSERT INTO {table}";
+            StringBuilder collumnsBuilder = new StringBuilder(" (");
+            StringBuilder valuesBuilder = new StringBuilder(" VALUES(");
+            foreach (PropertyInfo inventoryProperty in inventoryProperties)
+            {
+                string parametr = inventoryProperty.Name;
+                collumnsBuilder.Append($"{parametr},");
+                valuesBuilder.Append($"@{parametr},");
+                cmd.Parameters.Add($"@{parametr}");
+            }
+
+            // add to query Item_ID parametr
+            collumnsBuilder.Append("Item_ID)");
+            valuesBuilder.Append("@ItemId");
+            cmd.Parameters.Add("@ItemId");
+            cmd.CommandText += collumnsBuilder.ToString() + valuesBuilder.ToString();
+            return inventoryProperties;
         }
     }
 }

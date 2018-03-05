@@ -2,7 +2,7 @@
 
 namespace TTPRODB.BuisnessLogic.Entities
 {
-    [Table(Name = "Producers")]
+    [Table(Name = "Producer")]
     public class Producer
     {
         public int Id { get; set; }

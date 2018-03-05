@@ -80,23 +80,22 @@ namespace TTPRODB.DatabaseCommunication.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CREATE TABLE Items
+        ///   Looks up a localized string similar to CREATE TABLE Item
         ///(
         ///    ID int NOT NULL PRIMARY KEY,
         ///    Name text NOT NULL,
         ///	Url text NOT NULL,
         ///    Producer_ID int NOT NULL,
-        ///	Ratings int NOT NULL,
-        ///	Price int
+        ///	Ratings int NOT NULL,	
         ///);
         ///
-        ///CREATE TABLE Producers
+        ///CREATE TABLE Producer
         ///(
         ///    ID int NOT NULL PRIMARY KEY,
         ///    Name text NOT NULL	
         ///);
         ///
-        ///CREATE TABLE Rubbers
+        ///CREATE TABLE Rubber
         ///(
         ///    ID int NOT NULL PRIMARY KEY,
         ///    Item_ID int NOT NULL,
@@ -108,7 +107,8 @@ namespace TTPRODB.DatabaseCommunication.Resources {
         ///    Hardness real,
         ///    Gears real,
         ///    Throw_Angle real,
-        ///    Consis [rest of string was truncated]&quot;;.
+        ///    Consistency real,
+        ///  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CreateTables {
             get {

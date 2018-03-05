@@ -131,23 +131,22 @@ ALTER TABLE Pips
 ADD FOREIGN KEY (Item_ID) REFERENCES Items(ID);</value>
   </data>
   <data name="CreateTables" xml:space="preserve">
-    <value>CREATE TABLE Items
+    <value>CREATE TABLE Item
 (
     ID int NOT NULL PRIMARY KEY,
     Name text NOT NULL,
 	Url text NOT NULL,
     Producer_ID int NOT NULL,
-	Ratings int NOT NULL,
-	Price int
+	Ratings int NOT NULL,	
 );
 
-CREATE TABLE Producers
+CREATE TABLE Producer
 (
     ID int NOT NULL PRIMARY KEY,
     Name text NOT NULL	
 );
 
-CREATE TABLE Rubbers
+CREATE TABLE Rubber
 (
     ID int NOT NULL PRIMARY KEY,
     Item_ID int NOT NULL,
@@ -166,7 +165,7 @@ CREATE TABLE Rubbers
     Anti bit,
 );
 
-CREATE TABLE Blades
+CREATE TABLE Blade
 (
     ID int NOT NULL PRIMARY KEY,
     Item_ID int NOT NULL,

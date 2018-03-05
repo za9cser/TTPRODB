@@ -52,20 +52,25 @@ namespace TTPRODB.DatabaseCommunication
 
         public static Dictionary<string, dynamic> GetAllInventory(Type inventoryType)
         {
-            Dictionary<string, dynamic> producers = new Dictionary<string, dynamic>();
+            Dictionary<string, dynamic> items = new Dictionary<string, dynamic>();
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandText = $"SELECT * FROM Item, {inventoryType.Name} as inv WHERE Item.ID = inv.Item_ID";
+                    ConstructorInfo itemConstructor = inventoryType.GetConstructor(new[] {typeof(SqlDataReader)});
                     SqlDataReader sdr = cmd.ExecuteReader();
                     while (sdr.Read())
                     {
-
+                        dynamic item = itemConstructor.Invoke(new object[] {sdr});
+                        items.Add(item.Name, item);
+                        
                     }
                 }
             }
+
+            return items;
         }
 
         public static void InsertProducers(List<Producer> producers)

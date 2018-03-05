@@ -48,9 +48,10 @@ namespace TTPRODB.TTPRODBExecution
 
             InsertProducers(parseTTDb.ProducersToInsert);
 
-            for (int i = 0; i < dataToSave.Length; i++)
+            foreach (DataToSave data in dataToSave)
             {
-                
+                InsertItems(data.ItemsToInsert);
+                UpdateItems(data.ItemsToUpdate);
             }
 
 

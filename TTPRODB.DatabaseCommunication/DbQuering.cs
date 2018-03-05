@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using TTPRODB.BuisnessLogic.Entities;
@@ -124,9 +125,9 @@ namespace TTPRODB.DatabaseCommunication
         private static PropertyInfo[] BuidInventoryInsertQuery(List<dynamic> itemsList, SqlCommand cmd)
         {
             // Get inventory type and properties
-            Type inventoryType = itemsList[0].GetType();
-            string table = inventoryType.Name;
-            PropertyInfo[] inventoryProperties = inventoryType.GetProperties();
+            string table;
+            PropertyInfo[] inventoryProperties;
+            GetTableName(itemsList, out table, out inventoryProperties);
             // build query into invetory table and init command parameters
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = $"INSERT INTO {table}";
@@ -147,5 +148,53 @@ namespace TTPRODB.DatabaseCommunication
             cmd.CommandText += collumnsBuilder.ToString() + valuesBuilder.ToString();
             return inventoryProperties;
         }
+
+        private static void GetTableName(List<dynamic> itemsList, out string table, out PropertyInfo[] inventoryProperties)
+        {
+            Type inventoryType = itemsList[0].GetType();
+            table = inventoryType.Name;
+            inventoryProperties = inventoryType.GetProperties();
+        }
+
+        public static void UpdateItems(List<dynamic> itemsList)
+        {
+            using (var connection = new SqlConnection(DbConnect.DbConnectionString))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    string table;
+                    PropertyInfo[] inventoryProperties;
+                    GetTableName(itemsList, out table, out inventoryProperties);
+                    cmd.CommandType = CommandType.Text;
+                    PropertyInfo[] invetoryCharacteristicProperties =
+                        inventoryProperties.Where(x => x.GetType() != typeof(Int32)).ToArray();
+                    StringBuilder updateStringBuilder = new StringBuilder();
+                    
+                    foreach (PropertyInfo invetoryCharacteristic in invetoryCharacteristicProperties)
+                    {
+                        updateStringBuilder.Append($"{invetoryCharacteristic.Name}=@{invetoryCharacteristic.Name},");
+                        cmd.Parameters.Add($"@{invetoryCharacteristic.Name}");
+                    }
+
+                    updateStringBuilder = updateStringBuilder.Remove(updateStringBuilder.Length - 1, 1);
+                    string commandText = cmd.CommandText + updateStringBuilder;
+
+                    foreach (dynamic item in itemsList)
+                    {
+                        
+                        for (int i = 0; i < cmd.Parameters.Count; i++)
+                        {
+                            cmd.Parameters[i].Value = invetoryCharacteristicProperties[i].GetValue(item);
+                        }
+                        string condition = $" WHERE Name={item.Name}";
+                        cmd.CommandText = commandText + condition;
+                        cmd.ExecuteNonQuery();
+                    }
+
+                }
+            }
+        }
+
     }
 }

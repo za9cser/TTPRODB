@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -25,25 +26,82 @@ namespace TTPRODB.TTPRODBExecution
     /// </summary>
     public partial class MainWindow : Window
     {
+        public BackgroundWorker bw;
+        private int itemCount;
         public MainWindow()
         {
             InitializeComponent();
-
+            
             if (DbConnect.ValidateDatabase())
             {
                 GetDataFromSite();
             }
         }
 
+        // инициализируем фоновый поток
+        public void initBGworker()
+        {
+            bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;       // разрешение отмены
+            bw.WorkerReportsProgress = true;            // разрешение прогресса
+            bw.DoWork += bw_DoWork;                     // метод фонового потока
+            bw.ProgressChanged += bw_ProgressChanged;   // изменение UI
+            bw.RunWorkerCompleted += bw_RunWorkerCompleted; // поток завершен
+            bw.RunWorkerAsync();                        // запускаем BG worker 
+        }
+
+        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            info.Content = "Готово";
+        }
+
+        private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // начинаем новый процесс
+            if (e.ProgressPercentage == 0)
+            {
+                url.Text = "";
+                optype.Content = e.UserState;
+                prgbar.Value = 0;
+                info.Content = "0 / 0";
+                return;
+            }
+
+            prgbar.Value = ((double)e.ProgressPercentage / itemCount) * 100;
+            info.Content = e.ProgressPercentage.ToString() + " / " + itemCount.ToString();
+            url.Text = e.UserState.ToString();
+        }
+
+        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            ParseTTDb parseTTDb = new ParseTTDb(GetAllProducers(), GetItemCount());
+
+            DataToSave[] dataToSave = new DataToSave[parseTTDb.Pages.Length];
+
+            for (int i = 0; i < parseTTDb.Pages.Length; i++)
+            {
+                dataToSave[i] = parseTTDb.ParseItems(parseTTDb.Pages[i], parseTTDb.Types[i], null, null);
+            }
+
+            InsertProducers(parseTTDb.ProducersToInsert);
+
+            foreach (DataToSave data in dataToSave)
+            {
+                InsertItems(data.ItemsToInsert);
+                UpdateItems(data.ItemsToUpdate);
+            }
+        }
+
         private void GetDataFromSite()
         {
             ParseTTDb parseTTDb = new ParseTTDb(GetAllProducers(), GetItemCount());
-            
+
             DataToSave[] dataToSave = new DataToSave[parseTTDb.Pages.Length];
-            
-            for (int i = 0 ; i < parseTTDb.Pages.Length; i++)
+
+            for (int i = 0; i < parseTTDb.Pages.Length; i++)
             {
-                dataToSave[i] =  parseTTDb.ParseItems(parseTTDb.Pages[i], parseTTDb.Types[i], null, null);
+
+                dataToSave[i] = parseTTDb.ParseItems(parseTTDb.Pages[i], parseTTDb.Types[i], null, bw);
             }
 
             InsertProducers(parseTTDb.ProducersToInsert);

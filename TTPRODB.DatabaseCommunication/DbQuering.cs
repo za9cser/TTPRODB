@@ -50,6 +50,24 @@ namespace TTPRODB.DatabaseCommunication
             return producers.Count == 0 ? null : producers;
         }
 
+        public static Dictionary<string, dynamic> GetAllInventory(Type inventoryType)
+        {
+            Dictionary<string, dynamic> producers = new Dictionary<string, dynamic>();
+            using (var connection = new SqlConnection(DbConnect.DbConnectionString))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = $"SELECT * FROM Item, {inventoryType.Name} as inv WHERE Item.ID = inv.Item_ID";
+                    SqlDataReader sdr = cmd.ExecuteReader();
+                    while (sdr.Read())
+                    {
+
+                    }
+                }
+            }
+        }
+
         public static void InsertProducers(List<Producer> producers)
         {
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
@@ -191,7 +209,6 @@ namespace TTPRODB.DatabaseCommunication
                         cmd.CommandText = commandText + condition;
                         cmd.ExecuteNonQuery();
                     }
-
                 }
             }
         }

@@ -94,5 +94,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TTPRODB.BuisnessLogic\TTPRODB.BuisnessLogic.csproj">
+      <Project>{E70C858A-F60B-4A52-BF09-3ED73E25274E}</Project>
+      <Name>TTPRODB.BuisnessLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TTPRODB.DatabaseCommunication\TTPRODB.DatabaseCommunication.csproj">
+      <Project>{0A86A495-9864-4B2C-BADE-0D017E0B4D91}</Project>
+      <Name>TTPRODB.DatabaseCommunication</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

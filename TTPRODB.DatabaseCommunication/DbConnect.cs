@@ -14,7 +14,7 @@ namespace TTPRODB.DatabaseCommunication
         private static string dbName = "TTPRODB";        
 
         // connect to database
-        public static void ValidateDatabase()
+        public static bool ValidateDatabase()
         {
             // init mdf file parameters
             string outputFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -30,7 +30,7 @@ namespace TTPRODB.DatabaseCommunication
             // Check db structure
 
             // Check db data
-            CheckDbData();
+            return CheckDbData();
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace TTPRODB.DatabaseCommunication
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Count(*) FROM Items";
+                    cmd.CommandText = "SELECT Count(*) FROM Item";
                     if ((int) cmd.ExecuteScalar() == 0)
                     {
                         checkFlag = false;

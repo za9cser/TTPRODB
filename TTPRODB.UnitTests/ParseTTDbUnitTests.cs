@@ -39,7 +39,7 @@ namespace TTPRODB.UnitTests
             {
                 parse.InitializeProducer(producersDiv);
             }
-            Assert.AreNotEqual(parse.ProducersList.Count, 0);
+            Assert.AreNotEqual(parse.ProducerList.Count, 0);
         }
 
         [TestMethod]

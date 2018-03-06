@@ -8,44 +8,18 @@ namespace TTPRODB.BuisnessLogic.Entities
     {
         
         public int Id { get; set; }
-
-        
         public double Speed { get; set; }
-
-        
         public double Spin { get; set; }
-
-        
         public double Control { get; set; }
-
-        
         public double Tackiness { get; set; }
-
-        
         public double Weight { get; set; }
-
-                
         public double Hardness { get; set; }
-
-        
         public double Gears { get; set; }
-
-        
         public double ThrowAngle { get; set; }
-
-        
         public double Consistency { get; set; }
-
-        
         public double Durability { get; set; }
-
-        
         public double Overall { get; set; }
-
-        
         public bool Tensor { get; set; }
-
-        
         public bool Anti { get; set; }
 
         public Rubber() { }
@@ -69,6 +43,24 @@ namespace TTPRODB.BuisnessLogic.Entities
             Overall = overall;
             Tensor = tensor;
             Anti = anti;
+        }
+        
+        public Rubber(SqlDataReader sdr) : base(sdr)
+        {
+            Id = sdr.GetInt32(5);
+            Speed = sdr.GetDouble(7);
+            Spin = sdr.GetDouble(8);
+            Control = sdr.GetDouble(9);
+            Tackiness = sdr.GetDouble(10);
+            Weight = sdr.GetDouble(11);
+            Hardness = sdr.GetDouble(12);
+            Gears = sdr.GetDouble(13);
+            ThrowAngle = sdr.GetDouble(14);
+            Consistency = sdr.GetDouble(15);
+            Durability = sdr.GetDouble(16);
+            Overall = sdr.GetDouble(17);
+            Tensor = sdr.GetBoolean(18);
+            Anti = sdr.GetBoolean(19);
         }
     }
 }

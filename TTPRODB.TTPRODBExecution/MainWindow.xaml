@@ -7,13 +7,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBox Name="url" HorizontalAlignment="Center" Width="300"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Label Name="optype" Height="25"/>
-                <Label Name="info" Margin="20,0,0,0"/>
-            </StackPanel>
-            <ProgressBar Name="prgbar" HorizontalAlignment="Center" Width="200" Height="20"/>
-        </StackPanel>
+        
     </Grid>
 </Window>

@@ -4,6 +4,12 @@
              xmlns:local="clr-namespace:TTPRODB.TTPRODBExecution"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+         <ResourceDictionary>
+             <ResourceDictionary.MergedDictionaries>
+                 <ResourceDictionary Source="ResourceDictionaries/ResultTableStyle.xaml"/>
+                 <ResourceDictionary Source="ResourceDictionaries/BottomPanelStyle.xaml"/>
+                 <ResourceDictionary Source="ResourceDictionaries/FilterStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+         </ResourceDictionary>
     </Application.Resources>
 </Application>

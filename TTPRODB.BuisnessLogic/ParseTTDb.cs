@@ -11,8 +11,8 @@ namespace TTPRODB.BuisnessLogic
 {
     public class ParseTTDb
     {
-        public string[] Pages = { /*"blade", "rubber",*/ "pips" };
-        public Type[] Types = {/*typeof(Blade), typeof(Rubber),*/ typeof(Pips)};
+        public string[] Pages = { "blade", "rubber", "pips" };
+        public Type[] Types = { typeof(Blade), typeof(Rubber), typeof(Pips)};
 
         private string site = "http://www.revspin.net/";
         public Dictionary<string, Producer> ProducerList;
@@ -95,7 +95,7 @@ namespace TTPRODB.BuisnessLogic
                     {
                         dataToSave.ItemsToUpdate.Add(item);
                     }
-                    bw.ReportProgress(++counter, itemUrl);
+                    bw.ReportProgress(++counter, url);
                 }
             }
 

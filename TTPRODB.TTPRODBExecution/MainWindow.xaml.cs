@@ -77,7 +77,7 @@ namespace TTPRODB.TTPRODBExecution
             ParseTTDb parseTTDb = new ParseTTDb(GetAllProducers(), GetItemCount());
 
             DataToSave[] dataToSave = new DataToSave[parseTTDb.Pages.Length];
-            Dictionary<string, dynamic>[] invenoryList = {/*GetAllInventory<Blade>(), GetAllInventory<Rubber>(), */GetAllInventory<Pips>()};
+            Dictionary<string, dynamic>[] invenoryList = { GetAllInventory<Blade>(), GetAllInventory<Rubber>(), GetAllInventory<Pips>()};
             for (int i = 0; i < parseTTDb.Pages.Length; i++)
             {
                 bw.ReportProgress(0, parseTTDb.Pages[i] + " parsing");

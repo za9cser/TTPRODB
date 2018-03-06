@@ -106,9 +106,9 @@ namespace TTPRODB.DatabaseCommunication.Resources {
         ///    Weight real,
         ///    Hardness real,
         ///    Gears real,
-        ///    Throw_Angle real,
+        ///    ThrowAngle real,
         ///    Consistency real,
-        ///  [rest of string was truncated]&quot;;.
+        ///   [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CreateTables {
             get {

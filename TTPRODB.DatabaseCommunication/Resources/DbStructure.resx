@@ -157,7 +157,7 @@ CREATE TABLE Rubber
     Weight real,
     Hardness real,
     Gears real,
-    Throw_Angle real,
+    ThrowAngle real,
     Consistency real,
     Durability real,
     Overall real,

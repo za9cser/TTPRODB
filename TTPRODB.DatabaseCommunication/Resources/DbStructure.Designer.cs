@@ -61,17 +61,17 @@ namespace TTPRODB.DatabaseCommunication.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ALTER TABLE Items
-        ///ADD FOREIGN KEY (Producer_ID) REFERENCES Producers(ID);
+        ///   Looks up a localized string similar to ALTER TABLE Item
+        ///ADD FOREIGN KEY (Producer_ID) REFERENCES Producer(ID);
         ///
-        ///ALTER TABLE Rubbers
-        ///ADD FOREIGN KEY (Item_ID) REFERENCES Items(ID);
+        ///ALTER TABLE Rubber
+        ///ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);
         ///
-        ///ALTER TABLE Blades
-        ///ADD FOREIGN KEY (Item_ID) REFERENCES Items(ID);
+        ///ALTER TABLE Blade
+        ///ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);
         ///
         ///ALTER TABLE Pips
-        ///ADD FOREIGN KEY (Item_ID) REFERENCES Items(ID);.
+        ///ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);.
         /// </summary>
         internal static string AddForeignKeys {
             get {

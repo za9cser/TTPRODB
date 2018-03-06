@@ -19,6 +19,8 @@ namespace TTPRODB.BuisnessLogic.Entities
         public double Overall { get; set; }
         public string PipsType { get; set; }
 
+        public Pips() { }
+
         public Pips(int itemId, string name, string url, int producerId, int ratings, int id, double speed, 
             double spin, double control, double deception, double reversal, double weight, double hardness, 
             double consistency, double durability, double overall, string pipsType) 

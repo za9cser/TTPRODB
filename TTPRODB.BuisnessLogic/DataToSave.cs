@@ -4,7 +4,7 @@ namespace TTPRODB.BuisnessLogic
 {
     public class DataToSave
     {
-        public List<dynamic> ItemsToInsert;
-        public List<dynamic> ItemsToUpdate;
+        public List<dynamic> ItemsToInsert = new List<dynamic>();
+        public List<dynamic> ItemsToUpdate = new List<dynamic>();
     }
 }

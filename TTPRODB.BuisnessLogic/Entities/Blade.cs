@@ -14,6 +14,8 @@ namespace TTPRODB.BuisnessLogic.Entities
         public double Consistency { get; set; }
         public double Overall { get; set; }
 
+        public Blade() { }
+
         public Blade(int itemId, string name, string url, int producerId, int ratings, int id,
             double speed, double control, double stiffness, double hardness, double consistency, double overall)
             : base(itemId, name, url, producerId, ratings)

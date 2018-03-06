@@ -32,9 +32,9 @@ namespace TTPRODB.TTPRODBExecution
         {
             InitializeComponent();
             
-            if (DbConnect.ValidateDatabase())
+            if (!DbConnect.ValidateDatabase())
             {
-                GetDataFromSite();
+                initBGworker();
             }
         }
 
@@ -77,18 +77,22 @@ namespace TTPRODB.TTPRODBExecution
             ParseTTDb parseTTDb = new ParseTTDb(GetAllProducers(), GetItemCount());
 
             DataToSave[] dataToSave = new DataToSave[parseTTDb.Pages.Length];
-
+            Dictionary<string, dynamic>[] invenoryList = {/*GetAllInventory<Blade>(), GetAllInventory<Rubber>(), */GetAllInventory<Pips>()};
             for (int i = 0; i < parseTTDb.Pages.Length; i++)
             {
-                dataToSave[i] = parseTTDb.ParseItems(parseTTDb.Pages[i], parseTTDb.Types[i], null, null);
+                bw.ReportProgress(0, parseTTDb.Pages[i] + " parsing");
+                dataToSave[i] = parseTTDb.ParseItems(parseTTDb.Pages[i], parseTTDb.Types[i], invenoryList[i], bw, out itemCount);
             }
 
+            bw.ReportProgress(0, "Insert producers");
             InsertProducers(parseTTDb.ProducersToInsert);
 
-            foreach (DataToSave data in dataToSave)
+            for (int i = 0; i < dataToSave.Length; i++)
             {
-                InsertItems(data.ItemsToInsert);
-                UpdateItems(data.ItemsToUpdate);
+                bw.ReportProgress(0, $"Insert {parseTTDb.Pages[i]}");
+                InsertItems(dataToSave[i].ItemsToInsert);
+                bw.ReportProgress(0, $"Update {parseTTDb.Pages[i]}");
+                UpdateItems(dataToSave[i].ItemsToUpdate);
             }
         }
 
@@ -101,7 +105,7 @@ namespace TTPRODB.TTPRODBExecution
             for (int i = 0; i < parseTTDb.Pages.Length; i++)
             {
 
-                dataToSave[i] = parseTTDb.ParseItems(parseTTDb.Pages[i], parseTTDb.Types[i], null, bw);
+                dataToSave[i] = parseTTDb.ParseItems(parseTTDb.Pages[i], parseTTDb.Types[i], null, bw, out itemCount);
             }
 
             InsertProducers(parseTTDb.ProducersToInsert);

@@ -11,12 +11,12 @@ namespace TTPRODB.BuisnessLogic
 {
     public class ParseTTDb
     {
-        public string[] Pages = { "blade", "rubber", "pips" };
-        public Type[] Types = {typeof(Blade), typeof(Rubber), typeof(Pips)};
+        public string[] Pages = { /*"blade", "rubber",*/ "pips" };
+        public Type[] Types = {/*typeof(Blade), typeof(Rubber),*/ typeof(Pips)};
 
         private string site = "http://www.revspin.net/";
         public Dictionary<string, Producer> ProducerList;
-        public List<Producer> ProducersToInsert;
+        public List<Producer> ProducersToInsert = new List<Producer>();
 
         private int itemCount;     // count of items on page
         private int currentItemId;  // id of item in current type
@@ -24,7 +24,7 @@ namespace TTPRODB.BuisnessLogic
 
         public dynamic constructor;    // constructor for item's current type
         public Type currentItemType;          // item's current type 
-        public PropertyInfo[] itemRatingsProperties;   // array of current type item's properties 
+        public List<PropertyInfo> itemRatingsProperties = new List<PropertyInfo>();   // array of current type item's properties 
         public bool pipsFlag;
         
         
@@ -32,13 +32,13 @@ namespace TTPRODB.BuisnessLogic
         public ParseTTDb(Dictionary<string, Producer> producers, int itemCount)
         {
             ProducerList = producers;
-            this.itemCount = itemCount;
+            allItemId = itemCount;
         }
 
         #region ParseItemsRegion
 
         // parsing items page
-        public DataToSave ParseItems(string page, Type itemType, Dictionary<string, dynamic> itemList, BackgroundWorker bw)
+        public DataToSave ParseItems(string page, Type itemType, Dictionary<string, dynamic> itemList, BackgroundWorker bw, out int itemCount)
         {
             string url = site + page;
             var root = PageData.GetPageRootNode(url);
@@ -55,12 +55,24 @@ namespace TTPRODB.BuisnessLogic
             // initialize constructor, type and properties of currect items
             constructor = itemType.GetConstructor(new Type[0]);
             currentItemType = itemType;
-            itemRatingsProperties = itemType.GetProperties().Where(x => x.GetType() == typeof(double)).ToArray();
+            itemRatingsProperties.Clear();
+            foreach (PropertyInfo property in itemType.GetProperties())
+            {
+                if (property.PropertyType == typeof(double))
+                {
+                    itemRatingsProperties.Add(property);
+                }
+
+            }
+
+            // LINQ not working
+            //itemRatingsProperties = propertyInfos.Where(x => x.PropertyType == typeof(double)).ToArray();
             if (currentItemType.Name == "Pips")
             {
                 pipsFlag = true;
             }
 
+            int counter = 0;
             currentItemId = itemList.Count;
             DataToSave dataToSave = new DataToSave();
             for (int i = 0; i < producersDivs.Count; i++)
@@ -83,6 +95,7 @@ namespace TTPRODB.BuisnessLogic
                     {
                         dataToSave.ItemsToUpdate.Add(item);
                     }
+                    bw.ReportProgress(++counter, itemUrl);
                 }
             }
 

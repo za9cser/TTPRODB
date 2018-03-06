@@ -118,17 +118,17 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddForeignKeys" xml:space="preserve">
-    <value>ALTER TABLE Items
-ADD FOREIGN KEY (Producer_ID) REFERENCES Producers(ID);
+    <value>ALTER TABLE Item
+ADD FOREIGN KEY (Producer_ID) REFERENCES Producer(ID);
 
-ALTER TABLE Rubbers
-ADD FOREIGN KEY (Item_ID) REFERENCES Items(ID);
+ALTER TABLE Rubber
+ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);
 
-ALTER TABLE Blades
-ADD FOREIGN KEY (Item_ID) REFERENCES Items(ID);
+ALTER TABLE Blade
+ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);
 
 ALTER TABLE Pips
-ADD FOREIGN KEY (Item_ID) REFERENCES Items(ID);</value>
+ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);</value>
   </data>
   <data name="CreateTables" xml:space="preserve">
     <value>CREATE TABLE Item
@@ -191,7 +191,7 @@ CREATE TABLE Pips
     Consistency real,
     Durability real,
     Overall real,
-    Type text
+    PipsType text
 );</value>
   </data>
 </root>

@@ -45,7 +45,7 @@ namespace TTPRODB.DatabaseCommunication
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Count(*) FROM Items";
+                    cmd.CommandText = "SELECT Count(*) FROM Item";
                     if ((int) cmd.ExecuteScalar() == 0)
                     {
                         checkFlag = false;

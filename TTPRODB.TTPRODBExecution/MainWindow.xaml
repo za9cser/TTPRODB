@@ -7,6 +7,64 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <local:UpdateDatabase Visibility="Collapsed"/>
         
+        <Grid Name="ConteneGrid" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Name="SearchPanel" Grid.ColumnSpan="2" Orientation="Horizontal" Height="25" Margin="0,0,0,0">
+                <TextBox Name="SearchTextBox" Width="250" />
+                <ComboBox Name="InventorySelectComboBox" SelectedIndex="0" Background="White"
+                          ItemsSource="{Binding Path=InvetoryTypeArray}" Width="90">
+
+                </ComboBox>
+                <Button Name="SearchBtn" Margin="10,0,0,0" Content="Search" />
+            </StackPanel>
+            
+            <StackPanel Name="LeftSidePanel" Grid.Row="1">
+                <Label Content="Inventory"/>
+                <ComboBox Name="InventoryFilterComboBox" SelectedIndex="0" Background="White"
+                          ItemsSource="{Binding Path=InvetoryTypeArray}"/>
+                <Button Name="FilterButton" Content="Filter"  Height="25"/>
+            </StackPanel>
+
+            <StackPanel Name="BottomPnl" Orientation="Horizontal" Height="50" Width="auto" 
+                    HorizontalAlignment="Stretch" VerticalAlignment="Bottom"                   
+                    Grid.Row="2"
+                    Grid.ColumnSpan="2" 
+                    Background="#0096fb">
+                <Button Name="SearchBotomBtn" Style="{StaticResource ResourceKey=bottom_pnl_style}" Margin="10,10,0,10">
+                    <StackPanel Name="SearchBottomPnl" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Label Content="Поиск" Style="{StaticResource ResourceKey=btn_foreground1}"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="CompareBtn" Style="{StaticResource ResourceKey=bottom_pnl_style}" Margin="10,10,0,10">
+                    <StackPanel Name="ComparePnl" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Label Content="Сравнение" Style="{StaticResource ResourceKey=btn_foreground1}"/>
+                        <Label Content="14" Style="{StaticResource ResourceKey=btn_foreground2}"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="FavoriteBtn" Style="{StaticResource ResourceKey=bottom_pnl_style}" Click="Favorite_btn_Click" Margin="10,10,0,10">
+                    <StackPanel Name="FavoritePnl" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Label Content="Закладки" Style="{StaticResource ResourceKey=btn_foreground1}"/>
+                        <Label Content="0" Style="{StaticResource ResourceKey=btn_foreground2}"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="UpdateBtn" VerticalAlignment="Bottom"/>
+            </StackPanel>
+
+        </Grid>
     </Grid>
 </Window>

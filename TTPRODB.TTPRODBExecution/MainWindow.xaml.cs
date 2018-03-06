@@ -36,4 +36,9 @@ namespace TTPRODB.TTPRODBExecution
             }
        }
     }
+
+    public class ViewModel
+    {
+        public string[] InvetoryTypeArray { get; set; } = { "Blade", "Rubber", "Pips" };
+    }
 }

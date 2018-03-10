@@ -55,9 +55,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Filters\CharacteristicFilter.xaml.cs">
+      <DependentUpon>CharacteristicFilter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Filters\PipsTypeFilter.xaml.cs">
+      <DependentUpon>PipsTypeFilter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Filters\ProducersFilter.xaml.cs">
+      <DependentUpon>ProducersFilter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UpdateDatabase.xaml.cs">
       <DependentUpon>UpdateDatabase.xaml</DependentUpon>
     </Compile>
+    <Page Include="Filters\CharacteristicFilter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Filters\PipsTypeFilter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Filters\ProducersFilter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

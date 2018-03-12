@@ -64,9 +64,13 @@
     <Compile Include="Filters\ProducersFilter.xaml.cs">
       <DependentUpon>ProducersFilter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Filters\RubberTypeFilter.xaml.cs">
+      <DependentUpon>RubberTypeFilter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UpdateDatabase.xaml.cs">
       <DependentUpon>UpdateDatabase.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewMode.cs" />
     <Page Include="Filters\CharacteristicFilter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -76,6 +80,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Filters\ProducersFilter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Filters\RubberTypeFilter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

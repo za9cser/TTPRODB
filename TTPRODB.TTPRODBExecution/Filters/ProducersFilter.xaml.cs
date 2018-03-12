@@ -11,6 +11,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
         public ProducersFilter()
         {
             InitializeComponent();
+            FillProducerList();
         }
 
         public void FillProducerList()

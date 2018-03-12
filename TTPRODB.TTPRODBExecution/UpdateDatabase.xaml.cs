@@ -48,6 +48,9 @@ namespace TTPRODB.TTPRODBExecution
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             info.Content = "Готово";
+            MainWindow hwnd = App.Current.MainWindow as MainWindow;
+            hwnd.UpdateMode(Visibility.Visible);
+            hwnd.ContentGrid.Children.Remove(this);
         }
 
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)

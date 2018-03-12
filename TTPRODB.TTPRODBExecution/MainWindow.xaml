@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TTPRODB.TTPRODBExecution"
+        xmlns:local="clr-namespace:TTPRODB.TTPRODBExecution.Filters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="691" Width="810">
-    <Grid>
+        Title="MainWindow" Height="700" Width="810">
+    <!--<Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="36*"/>
             <ColumnDefinition Width="365*"/>
@@ -14,11 +14,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        <local:UpdateDatabase Visibility="Collapsed" Grid.ColumnSpan="2"/>
+        </Grid.RowDefinitions>-->
 
-        <Grid Name="ConteneGrid" Grid.Row="1" Grid.ColumnSpan="2">
+        <Grid Name="ContentGrid">
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="50" />
@@ -28,28 +28,35 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Name="SearchPanel" Grid.ColumnSpan="2" Orientation="Horizontal" Height="25" Margin="0,0,0,0">
+            <StackPanel Name="SearchPanel" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Height="25" Margin="0,0,0,0">
                 <TextBox Name="SearchTextBox" Width="250" />
-                <ComboBox Name="InventorySelectComboBox" SelectedIndex="0" Background="White"
+                <ComboBox Name="InventorySearchComboBox" SelectedIndex="0" Background="White"
                           ItemsSource="{Binding Path=InvetoryTypeArray}" Width="90">
-
+                
                 </ComboBox>
                 <Button Name="SearchBtn" Margin="10,0,0,0" Content="Search" />
             </StackPanel>
 
-            <StackPanel Name="LeftSidePanel" Grid.Row="1">
-                <Label Content="Inventory"/>
-                <ComboBox Name="InventoryFilterComboBox" SelectedIndex="0" Background="White"
-                          ItemsSource="{Binding Path=InvetoryTypeArray}"/>
+            <StackPanel Name="LeftSidePanel" Grid.Row="2" VerticalAlignment="Top">
+                <StackPanel Name="InventoryPanel">
+                    <Label Content="Inventory"/>
+                    <ComboBox Name="InventoryFilterComboBox" SelectedIndex="0" Background="White"
+                              ItemsSource="{Binding Path=InvetoryTypeArray}" SelectionChanged="InventoryFilterComboBoxOnSelectionChanged"/>
+                    <local:ProducersFilter/>
+                </StackPanel>
+                
+            <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+                <StackPanel Name="CharacteristicPanel" MaxHeight="300" CanVerticallyScroll="True"/>
+            </ScrollViewer>
                 <Button Name="FilterButton" Content="Filter"  Height="25"/>
             </StackPanel>
 
-            <StackPanel Name="BottomPanel" Orientation="Horizontal" Width="auto" VerticalAlignment="Bottom" 
-                    
-                    
-                    Grid.Row="2"
-                    Grid.ColumnSpan="2" 
-                    Background="#0096fb">
+
+            <StackPanel Name="BottomPanel" Orientation="Horizontal" Height="50" Width="auto" 
+                        HorizontalAlignment="Stretch" VerticalAlignment="Bottom"                   
+                        Grid.Row="3"
+                        Grid.ColumnSpan="2" 
+                        Background="#0096fb">
                 <Button Name="SearchBotomBtn" Style="{StaticResource ResourceKey=BottomPanelStyle}" Margin="10,10,0,10">
                     <StackPanel Name="SearchBottomPnl" Orientation="Horizontal" VerticalAlignment="Center">
                         <Label Content="Поиск" Style="{StaticResource ResourceKey=ButttonForeground1}"/>
@@ -71,5 +78,5 @@
             </StackPanel>
 
         </Grid>
-    </Grid>
+    <!--</Grid>-->
 </Window>

@@ -58,12 +58,12 @@ namespace TTPRODB.DatabaseCommunication
                 using (var cmd = connection.CreateCommand())
                 {
                     Type inventoryType = typeof(T);
-                    cmd.CommandText = $"SELECT * FROM Item, {inventoryType.Name} as inv WHERE Item.ID = inv.Item_ID";
+                    cmd.CommandText = $"SELECT * FROM Item inner JOIN {inventoryType.Name} ON Item.ID = inv.Item_ID";
                     ConstructorInfo itemConstructor = inventoryType.GetConstructor(new[] {typeof(SqlDataReader)});
                     SqlDataReader sdr = cmd.ExecuteReader();
                     while (sdr.Read())
                     {
-                        dynamic item =  (T) itemConstructor.Invoke(new object[] {sdr});
+                        dynamic item = (T) itemConstructor.Invoke(new object[] {sdr});
                         items.Add(item.Name, item);
                     }
                 }
@@ -71,7 +71,7 @@ namespace TTPRODB.DatabaseCommunication
 
             return items;
         }
-        
+
         public static void InsertProducers(List<Producer> producers)
         {
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
@@ -104,16 +104,18 @@ namespace TTPRODB.DatabaseCommunication
             {
                 return;
             }
+
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
             {
                 connection.Open();
                 // create two command to insert into Item table and specific inventory table
                 using (SqlCommand cmd1 = connection.CreateCommand(),
-                       cmd2 = connection.CreateCommand())
+                    cmd2 = connection.CreateCommand())
                 {
                     // build query into Item table
                     cmd1.CommandType = CommandType.Text;
-                    cmd1.CommandText = "INSERT INTO Item (ID, Name, Url, Producer_ID, Ratings) VALUES (@ItemId, @Name, @Url, @ProducerId, @Ratings)";
+                    cmd1.CommandText =
+                        "INSERT INTO Item (ID, Name, Url, Producer_ID, Ratings) VALUES (@ItemId, @Name, @Url, @ProducerId, @Ratings)";
                     PropertyInfo[] itemProperties = typeof(Item).GetProperties();
                     foreach (PropertyInfo itemProperty in itemProperties)
                     {
@@ -130,7 +132,7 @@ namespace TTPRODB.DatabaseCommunication
                     foreach (dynamic item in itemsList)
                     {
                         // init isert into Item command parrameters value
-                        Item localItem = (Item)item;
+                        Item localItem = (Item) item;
                         for (int i = 0; i < cmd1.Parameters.Count; i++)
                         {
                             cmd1.Parameters[i].Value = itemProperties[i].GetValue(localItem);
@@ -141,6 +143,7 @@ namespace TTPRODB.DatabaseCommunication
                         {
                             cmd2.Parameters[i].Value = inventoryProperties[i].GetValue(item);
                         }
+
                         // init Item_Id parametr
                         cmd2.Parameters[cmd2.Parameters.Count - 1].Value = item.ItemId;
 
@@ -155,7 +158,7 @@ namespace TTPRODB.DatabaseCommunication
                             Console.WriteLine(e);
                             throw;
                         }
-                        
+
                     }
                 }
             }
@@ -192,6 +195,7 @@ namespace TTPRODB.DatabaseCommunication
             {
                 return null;
             }
+
             // build query into invetory table and init command parameters
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = $"INSERT INTO {table}";
@@ -213,7 +217,8 @@ namespace TTPRODB.DatabaseCommunication
             return inventoryProperties;
         }
 
-        private static bool GetTableName(List<dynamic> itemsList, out string table, out PropertyInfo[] inventoryProperties)
+        private static bool GetTableName(List<dynamic> itemsList, out string table,
+            out PropertyInfo[] inventoryProperties)
         {
             if (itemsList.Count == 0)
             {
@@ -221,9 +226,11 @@ namespace TTPRODB.DatabaseCommunication
                 inventoryProperties = null;
                 return false;
             }
+
             Type inventoryType = itemsList[0].GetType();
             table = inventoryType.Name;
-            inventoryProperties = inventoryType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            inventoryProperties =
+                inventoryType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             return true;
         }
 
@@ -233,6 +240,7 @@ namespace TTPRODB.DatabaseCommunication
             {
                 return;
             }
+
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
             {
                 connection.Open();
@@ -245,7 +253,7 @@ namespace TTPRODB.DatabaseCommunication
                     PropertyInfo[] invetoryCharacteristicProperties =
                         inventoryProperties.Where(x => x.GetType() != typeof(Int32)).ToArray();
                     StringBuilder updateStringBuilder = new StringBuilder();
-                    
+
                     foreach (PropertyInfo invetoryCharacteristic in invetoryCharacteristicProperties)
                     {
                         updateStringBuilder.Append($"{invetoryCharacteristic.Name}=@{invetoryCharacteristic.Name},");
@@ -257,11 +265,12 @@ namespace TTPRODB.DatabaseCommunication
 
                     foreach (dynamic item in itemsList)
                     {
-                        
+
                         for (int i = 0; i < cmd.Parameters.Count; i++)
                         {
                             cmd.Parameters[i].Value = invetoryCharacteristicProperties[i].GetValue(item);
                         }
+
                         string condition = $" WHERE Name={item.Name}";
                         cmd.CommandText = commandText + condition;
                         cmd.ExecuteNonQuery();
@@ -270,5 +279,32 @@ namespace TTPRODB.DatabaseCommunication
             }
         }
 
+        public static List<dynamic> GetInventoryByName(string inventoryName, Type inventoryType)
+        {
+            List<dynamic> items = new List<dynamic>();
+            using (var connection = new SqlConnection(DbConnect.DbConnectionString))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText =
+                        $"SELECT * FROM Item inner JOIN {inventoryType.Name} as inventory ON Item.Id = inventory.Item_ID WHERE Item.Name LIKE '%'+@inventoryName+'%'";
+                    cmd.Parameters.AddWithValue("@inventoryName", inventoryName);
+                    SqlDataReader sqlDataReader = cmd.ExecuteReader();
+
+                    ConstructorInfo constructorInfo = inventoryType.GetConstructor(new[] {typeof(SqlDataReader)});
+                    
+                    while (sqlDataReader.Read())
+                    {
+                        object tempItem = constructorInfo.Invoke(new[] {sqlDataReader});
+                        dynamic item = Convert.ChangeType(tempItem, inventoryType);
+                        items.Add(item);
+                    }
+                }
+            }
+
+            return items;
+        }
     }
 }

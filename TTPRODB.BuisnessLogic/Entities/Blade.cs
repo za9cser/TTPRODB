@@ -16,31 +16,6 @@ namespace TTPRODB.BuisnessLogic.Entities
 
         public Blade() { }
 
-        public Blade(int itemId, string name, string url, int producerId, int ratings, int id,
-            double speed, double control, double stiffness, double hardness, double consistency, double overall)
-            : base(itemId, name, url, producerId, ratings)
-        {
-            Id = id;
-            Speed = speed;
-            Control = control;
-            Stiffness = stiffness;
-            Hardness = hardness;
-            Consistency = consistency;
-            Overall = overall;
-        }
-
-        public Blade(int id, double speed, double control, double stiffness, double hardness,
-            double consistency, double overall)
-        {
-            Id = id;
-            Speed = speed;
-            Control = control;
-            Stiffness = stiffness;
-            Hardness = hardness;
-            Consistency = consistency;
-            Overall = overall;
-        }
-
         public Blade(SqlDataReader sdr) : base(sdr)
         {
             Id = sdr.GetInt32(5);

@@ -29,7 +29,8 @@ namespace TTPRODB.TTPRODBExecution
     /// </summary>
     public partial class MainWindow : Window
     {
-        string[] InvetoryTypeArray { get; set; } = { "Blade", "Rubber", "Pips" };
+        string[] invetoryTypeArray { get; set; } = { "Blade", "Rubber", "Pips" };
+        private Type[] inventoryTypes = {typeof(Blade), typeof(Rubber), typeof(Pips)};
         private string[][] characteristics;
         private ViewMode mode = ViewMode.Search;
         public MainWindow()
@@ -43,8 +44,8 @@ namespace TTPRODB.TTPRODBExecution
             // init characteristics
             InitCharacterisArrays();
             // init comboboxes
-            InventorySearchComboBox.ItemsSource = InvetoryTypeArray;
-            InventoryFilterComboBox.ItemsSource = InvetoryTypeArray;
+            InventorySearchComboBox.ItemsSource = invetoryTypeArray;
+            InventoryFilterComboBox.ItemsSource = invetoryTypeArray;
             InventoryFilterComboBox.SelectedIndex = 0;
             InventorySearchComboBox.SelectedIndex = 0;
         }
@@ -108,6 +109,11 @@ namespace TTPRODB.TTPRODBExecution
             }
 
             //CharacteristicPanel.MaxHeight += 20;
+        }
+
+        private void SearchButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Data.Linq.Mapping;
+﻿using System;
+using System.Data.Linq.Mapping;
 using System.Data.SqlClient;
 
 namespace TTPRODB.BuisnessLogic.Entities
@@ -6,17 +7,78 @@ namespace TTPRODB.BuisnessLogic.Entities
     
     public class Pips : Item
     {
+        private double speed;
+        private double spin;
+        private double control;
+        private double deception;
+        private double reversal;
+        private double weight;
+        private double hardness;
+        private double consistency;
+        private double durability;
+        private double overall;
         public int Id { get; set; }
-        public double Speed { get; set; }
-        public double Spin { get; set; }
-        public double Control { get; set; }
-        public double Deception { get; set; }
-        public double Reversal { get; set; }
-        public double Weight { get; set; }
-        public double Hardness { get; set; }
-        public double Consistency { get; set; }
-        public double Durability { get; set; }
-        public double Overall { get; set; }
+
+        public double Speed
+        {
+            get => speed;
+            set => speed = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Spin
+        {
+            get => spin;
+            set => spin = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Control
+        {
+            get => control;
+            set => control = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Deception
+        {
+            get => deception;
+            set => deception = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Reversal
+        {
+            get => reversal;
+            set => reversal = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Weight
+        {
+            get => weight;
+            set => weight = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Hardness
+        {
+            get => hardness;
+            set => hardness = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Consistency
+        {
+            get => consistency;
+            set => consistency = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Durability
+        {
+            get => durability;
+            set => durability = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Overall
+        {
+            get => overall;
+            set => overall = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
         public string PipsType { get; set; }
 
         public Pips() { }

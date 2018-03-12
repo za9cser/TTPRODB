@@ -170,7 +170,7 @@ namespace TTPRODB.DatabaseCommunication
             switch (itemPropertyPropertyType.Name)
             {
                 case "Double":
-                    type = SqlDbType.Real;
+                    type = SqlDbType.Float;
                     break;
                 case "Int32":
                     type = SqlDbType.Int;

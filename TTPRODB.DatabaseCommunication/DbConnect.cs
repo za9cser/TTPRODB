@@ -10,7 +10,7 @@ namespace TTPRODB.DatabaseCommunication
 {
     public static class DbConnect
     {
-        public static string DbConnectionString { get; } = @"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename =|DataDirectory|\TTPRODB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        public static string DbConnectionString { get; } = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TTPRODB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private static string dbName = "TTPRODB";        
 
         // connect to database

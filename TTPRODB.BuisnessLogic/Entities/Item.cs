@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace TTPRODB.BuisnessLogic.Entities
 {
-    [Table(Name = "Items")]
+    [Table(Name = "Item")]
     public abstract class Item
     {
         public int ItemId { get; set; }

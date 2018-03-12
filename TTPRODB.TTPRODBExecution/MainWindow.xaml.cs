@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,6 +18,8 @@ using System.Windows.Shapes;
 using TTPRODB.BuisnessLogic;
 using TTPRODB.BuisnessLogic.Entities;
 using TTPRODB.DatabaseCommunication;
+using TTPRODB.TTPRODBExecution.Filters;
+using static System.Reflection.BindingFlags;
 using static TTPRODB.DatabaseCommunication.DbQuering;
 
 namespace TTPRODB.TTPRODBExecution
@@ -26,97 +29,90 @@ namespace TTPRODB.TTPRODBExecution
     /// </summary>
     public partial class MainWindow : Window
     {
-        public BackgroundWorker bw;
-        private int itemCount;
+        string[] InvetoryTypeArray { get; set; } = { "Blade", "Rubber", "Pips" };
+        private string[][] characteristics;
+        private ViewMode mode = ViewMode.Search;
         public MainWindow()
         {
             InitializeComponent();
             
             if (!DbConnect.ValidateDatabase())
             {
-                initBGworker();
+                UpdateMode(Visibility.Collapsed);
+            }
+            // init characteristics
+            InitCharacterisArrays();
+            // init comboboxes
+            InventorySearchComboBox.ItemsSource = InvetoryTypeArray;
+            InventoryFilterComboBox.ItemsSource = InvetoryTypeArray;
+            InventoryFilterComboBox.SelectedIndex = 0;
+            InventorySearchComboBox.SelectedIndex = 0;
+        }
+
+        public void UpdateMode(Visibility contentVisibility)
+        {
+            SearchPanel.Visibility = contentVisibility;
+            BottomPanel.Visibility = contentVisibility;
+            LeftSidePanel.Visibility = contentVisibility;
+            UpdateDatabase updateDatabase = new UpdateDatabase();
+            Grid.SetRow(updateDatabase, 0);
+            Grid.SetColumnSpan(updateDatabase, 2);
+            ContentGrid.Children.Add(updateDatabase);
+        }
+
+        // init characteristics of items
+        private void InitCharacterisArrays()
+        {
+            bool SelectDouble(PropertyInfo x) => x.PropertyType == typeof(double);
+
+            characteristics = new[]
+            {
+                typeof(Blade).GetProperties(Public | Instance | DeclaredOnly).Where(SelectDouble).Select(x => x.Name).ToArray(),
+                typeof(Rubber).GetProperties(Public | Instance | DeclaredOnly).Where(SelectDouble).Select(x => x.Name).ToArray(),
+                typeof(Pips).GetProperties(Public | Instance | DeclaredOnly).Where(SelectDouble).Select(x => x.Name).ToArray()
+            };
+        }
+
+        private void InventoryFilterComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (mode)
+            {
+                case ViewMode.Search:
+                    BuildFilters(((ComboBox) sender).SelectedIndex);
+                    break;
             }
         }
 
-        // инициализируем фоновый поток
-        public void initBGworker()
+        private void BuildFilters(int selectedIndex)
         {
-            bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;       // разрешение отмены
-            bw.WorkerReportsProgress = true;            // разрешение прогресса
-            bw.DoWork += bw_DoWork;                     // метод фонового потока
-            bw.ProgressChanged += bw_ProgressChanged;   // изменение UI
-            bw.RunWorkerCompleted += bw_RunWorkerCompleted; // поток завершен
-            bw.RunWorkerAsync();                        // запускаем BG worker 
-        }
-
-        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            info.Content = "Готово";
-        }
-
-        private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            // начинаем новый процесс
-            if (e.ProgressPercentage == 0)
+            CharacteristicPanel.Children.Clear();
+            //CharacteristicPanel.MaxHeight = 150; 
+            foreach (string characteristic in characteristics[selectedIndex])
             {
-                url.Text = "";
-                optype.Content = e.UserState;
-                prgbar.Value = 0;
-                info.Content = "0 / 0";
-                return;
+                CharacteristicPanel.Children.Add(new CharacteristicFilter(characteristic));
+                //CharacteristicPanel.MaxHeight += 40;
             }
 
-            prgbar.Value = ((double)e.ProgressPercentage / itemCount) * 100;
-            info.Content = e.ProgressPercentage.ToString() + " / " + itemCount.ToString();
-            url.Text = e.UserState.ToString();
-        }
-
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            ParseTTDb parseTTDb = new ParseTTDb(GetAllProducers(), GetItemCount());
-
-            DataToSave[] dataToSave = new DataToSave[parseTTDb.Pages.Length];
-            Dictionary<string, dynamic>[] invenoryList = { GetAllInventory<Blade>(), GetAllInventory<Rubber>(), GetAllInventory<Pips>()};
-            for (int i = 0; i < parseTTDb.Pages.Length; i++)
+            switch (selectedIndex)
             {
-                bw.ReportProgress(0, parseTTDb.Pages[i] + " parsing");
-                dataToSave[i] = parseTTDb.ParseItems(parseTTDb.Pages[i], parseTTDb.Types[i], invenoryList[i], bw, out itemCount);
+                // Rubber
+                case 1:
+                    CharacteristicPanel.Children.Add(new RubberTypeFilter());
+                    //CharacteristicPanel.MaxHeight += 50; 
+                    break;
+                // Pipses
+                case 2:
+                    CharacteristicPanel.Children.Add(new PipsTypeFilter());
+                    //CharacteristicPanel.MaxHeight += 64;
+                    break;
             }
 
-            bw.ReportProgress(0, "Insert producers");
-            InsertProducers(parseTTDb.ProducersToInsert);
-
-            for (int i = 0; i < dataToSave.Length; i++)
-            {
-                bw.ReportProgress(0, $"Insert {parseTTDb.Pages[i]}");
-                InsertItems(dataToSave[i].ItemsToInsert);
-                bw.ReportProgress(0, $"Update {parseTTDb.Pages[i]}");
-                UpdateItems(dataToSave[i].ItemsToUpdate);
-            }
-        }
-
-        private void GetDataFromSite()
-        {
-            ParseTTDb parseTTDb = new ParseTTDb(GetAllProducers(), GetItemCount());
-
-            DataToSave[] dataToSave = new DataToSave[parseTTDb.Pages.Length];
-
-            for (int i = 0; i < parseTTDb.Pages.Length; i++)
-            {
-
-                dataToSave[i] = parseTTDb.ParseItems(parseTTDb.Pages[i], parseTTDb.Types[i], null, bw, out itemCount);
-            }
-
-            InsertProducers(parseTTDb.ProducersToInsert);
-
-            foreach (DataToSave data in dataToSave)
-            {
-                InsertItems(data.ItemsToInsert);
-                UpdateItems(data.ItemsToUpdate);
-            }
-
-
+            //CharacteristicPanel.MaxHeight += 20;
         }
     }
+
+    //public class ViewModel
+    //{
+    //    public string[] InvetoryTypeArray { get; set; } = { "Blade", "Rubber", "Pips" };
+    //}
 }

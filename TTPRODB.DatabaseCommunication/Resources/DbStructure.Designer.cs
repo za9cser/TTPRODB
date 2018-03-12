@@ -99,16 +99,15 @@ namespace TTPRODB.DatabaseCommunication.Resources {
         ///(
         ///    ID int NOT NULL PRIMARY KEY,
         ///    Item_ID int NOT NULL,
-        ///	Speed real,
-        ///    Spin real,
-        ///    Control real,
-        ///    Tackiness real,
-        ///    Weight real,
-        ///    Hardness real,
-        ///    Gears real,
-        ///    ThrowAngle real,
-        ///    Consistency real,
-        ///   [rest of string was truncated]&quot;;.
+        ///	Speed float,
+        ///    Spin float,
+        ///    Control float,
+        ///    Tackiness float,
+        ///    Weight float,
+        ///    Hardness float,
+        ///    Gears float,
+        ///    ThrowAngle float,
+        ///    Consistency f [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CreateTables {
             get {

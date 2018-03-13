@@ -1,26 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data.Common;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using TTPRODB.BuisnessLogic;
 using TTPRODB.BuisnessLogic.Entities;
 using TTPRODB.DatabaseCommunication;
 using TTPRODB.TTPRODBExecution.Filters;
 using static System.Reflection.BindingFlags;
-using static TTPRODB.DatabaseCommunication.DbQuering;
 
 namespace TTPRODB.TTPRODBExecution
 {
@@ -29,9 +17,14 @@ namespace TTPRODB.TTPRODBExecution
     /// </summary>
     public partial class MainWindow : Window
     {
-        string[] InvetoryTypeArray { get; set; } = { "Blade", "Rubber", "Pips" };
+        string[] invetoryTypeArray { get; set; } = { "Blade", "Rubber", "Pips" };
+
+        private const BindingFlags OnlyClassBindingFlags = Public | Instance | DeclaredOnly;
+        private Type[] inventoryTypes = {typeof(Blade), typeof(Rubber), typeof(Pips)};
         private string[][] characteristics;
+        private DataGrid[] resultTables;
         private ViewMode mode = ViewMode.Search;
+        private Label notFoundMessageLabel;
         public MainWindow()
         {
             InitializeComponent();
@@ -40,13 +33,58 @@ namespace TTPRODB.TTPRODBExecution
             {
                 UpdateMode(Visibility.Collapsed);
             }
+            notFoundMessageLabel = new Label()
+            {
+                Content = "Nothing found by your query",
+                FontSize = 18,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
             // init characteristics
             InitCharacterisArrays();
+            InitResultTables();
             // init comboboxes
-            InventorySearchComboBox.ItemsSource = InvetoryTypeArray;
-            InventoryFilterComboBox.ItemsSource = InvetoryTypeArray;
+            InventorySearchComboBox.ItemsSource = invetoryTypeArray;
+            InventoryFilterComboBox.ItemsSource = invetoryTypeArray;
             InventoryFilterComboBox.SelectedIndex = 0;
             InventorySearchComboBox.SelectedIndex = 0;
+        }
+
+        private void InitResultTables()
+        {
+            resultTables = new DataGrid[characteristics.GetLength(0)];
+            for (int i = 0; i < characteristics.GetLength(0); i++)
+            {
+                resultTables[i] = new DataGrid();
+                resultTables[i].AutoGenerateColumns = false;
+                resultTables[i].Columns.Add(new DataGridTextColumn()
+                    { Header = "Name", Binding = new Binding("Name") });
+                resultTables[i].Columns.Add(new DataGridTextColumn()
+                    { Header = "Ratings", Binding = new Binding("Ratings") });
+                foreach (string name in characteristics[i])
+                {
+                    resultTables[i].Columns.Add(new DataGridTextColumn()
+                        { Header = name, Binding = new Binding(name) });
+                }
+
+                switch (i)
+                {
+                    // Rubber
+                    case 1:
+                        resultTables[i].Columns.Add(new DataGridCheckBoxColumn()
+                            { Header = "Tensor", Binding = new Binding("Tensor"), IsReadOnly = true});
+                        resultTables[i].Columns.Add(new DataGridCheckBoxColumn()
+                            { Header = "Anti", Binding = new Binding("Anti"), IsReadOnly = true});
+                        break;
+                    // Pipses
+                    case 2:
+                        resultTables[i].Columns.Add(new DataGridTextColumn()
+                            { Header = "Pips type", Binding = new Binding("PipsType")});
+                        break;
+                }
+                Grid.SetRow(resultTables[i], 2);
+                Grid.SetColumn(resultTables[i], 1);
+            }
         }
 
         public void UpdateMode(Visibility contentVisibility)
@@ -60,17 +98,20 @@ namespace TTPRODB.TTPRODBExecution
             ContentGrid.Children.Add(updateDatabase);
         }
 
-        // init characteristics of items
+        // init string array of item characteristics
         private void InitCharacterisArrays()
         {
-            bool SelectDouble(PropertyInfo x) => x.PropertyType == typeof(double);
-
             characteristics = new[]
             {
-                typeof(Blade).GetProperties(Public | Instance | DeclaredOnly).Where(SelectDouble).Select(x => x.Name).ToArray(),
-                typeof(Rubber).GetProperties(Public | Instance | DeclaredOnly).Where(SelectDouble).Select(x => x.Name).ToArray(),
-                typeof(Pips).GetProperties(Public | Instance | DeclaredOnly).Where(SelectDouble).Select(x => x.Name).ToArray()
+                typeof(Blade).GetProperties(OnlyClassBindingFlags).Where(SelectDouble).Select(x => x.Name).ToArray(),
+                typeof(Rubber).GetProperties(OnlyClassBindingFlags).Where(SelectDouble).Select(x => x.Name).ToArray(),
+                typeof(Pips).GetProperties(OnlyClassBindingFlags).Where(SelectDouble).Select(x => x.Name).ToArray()
             };
+        }
+
+        bool SelectDouble(PropertyInfo x)
+        {
+            return x.PropertyType == typeof(double);
         }
 
         private void InventoryFilterComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -86,11 +127,10 @@ namespace TTPRODB.TTPRODBExecution
         private void BuildFilters(int selectedIndex)
         {
             CharacteristicPanel.Children.Clear();
-            //CharacteristicPanel.MaxHeight = 150; 
+            
             foreach (string characteristic in characteristics[selectedIndex])
             {
                 CharacteristicPanel.Children.Add(new CharacteristicFilter(characteristic));
-                //CharacteristicPanel.MaxHeight += 40;
             }
 
             switch (selectedIndex)
@@ -98,21 +138,41 @@ namespace TTPRODB.TTPRODBExecution
                 // Rubber
                 case 1:
                     CharacteristicPanel.Children.Add(new RubberTypeFilter());
-                    //CharacteristicPanel.MaxHeight += 50; 
                     break;
                 // Pipses
                 case 2:
                     CharacteristicPanel.Children.Add(new PipsTypeFilter());
-                    //CharacteristicPanel.MaxHeight += 64;
                     break;
             }
 
-            //CharacteristicPanel.MaxHeight += 20;
+            
+        }
+
+        private void SearchButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
+            if (item.GetType() == typeof(DataGrid) || item.GetType() == typeof(Label))
+            {
+                ContentGrid.Children.Remove(item);
+            }
+            
+            // get items
+            List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
+            if (items == null)
+            {
+                Grid.SetRow(notFoundMessageLabel, 2);
+                Grid.SetColumn(notFoundMessageLabel, 1);
+                ContentGrid.Children.Add(notFoundMessageLabel);
+                return;
+            }
+
+            // build table
+            DataGrid table = resultTables[InventorySearchComboBox.SelectedIndex];
+            table.Items.Clear();
+            table.ItemsSource = items;
+            Grid.SetRow(table, 2);
+            Grid.SetColumn(table, 1);
+            ContentGrid.Children.Add(table);
         }
     }
-
-    //public class ViewModel
-    //{
-    //    public string[] InvetoryTypeArray { get; set; } = { "Blade", "Rubber", "Pips" };
-    //}
 }

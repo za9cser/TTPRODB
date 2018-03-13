@@ -1,4 +1,5 @@
-﻿using System.Data.Linq.Mapping;
+﻿using System;
+using System.Data.Linq.Mapping;
 using System.Data.SqlClient;
 
 namespace TTPRODB.BuisnessLogic.Entities
@@ -6,19 +7,86 @@ namespace TTPRODB.BuisnessLogic.Entities
     
     public class Rubber : Item
     {
-        
+        private double speed;
+        private double spin;
+        private double control;
+        private double tackiness;
+        private double weight;
+        private double hardness;
+        private double gears;
+        private double throwAngle;
+        private double consistency;
+        private double durability;
+        private double overall;
+
         public int Id { get; set; }
-        public double Speed { get; set; }
-        public double Spin { get; set; }
-        public double Control { get; set; }
-        public double Tackiness { get; set; }
-        public double Weight { get; set; }
-        public double Hardness { get; set; }
-        public double Gears { get; set; }
-        public double ThrowAngle { get; set; }
-        public double Consistency { get; set; }
-        public double Durability { get; set; }
-        public double Overall { get; set; }
+
+        public double Speed
+        {
+            get => speed;
+            set => speed = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Spin
+        {
+            get => spin;
+            set => spin = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Control
+        {
+            get => control;
+            set => control = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Tackiness
+        {
+            get => tackiness;
+            set => tackiness = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Weight
+        {
+            get => weight;
+            set => weight = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Hardness
+        {
+            get => hardness;
+            set => hardness = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Gears
+        {
+            get => gears;
+            set => gears = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double ThrowAngle
+        {
+            get => throwAngle;
+            set => throwAngle = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Consistency
+        {
+            get => consistency;
+            set => consistency = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Durability
+        {
+            get => durability;
+            set => durability = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Overall
+        {
+            get => overall;
+            set => overall = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
         public bool Tensor { get; set; }
         public bool Anti { get; set; }
 

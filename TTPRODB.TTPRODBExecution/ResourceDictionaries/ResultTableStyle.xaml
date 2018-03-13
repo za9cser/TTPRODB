@@ -20,7 +20,12 @@
         <Setter Property="AlternationCount" Value="2"></Setter>
     </Style>
     
+    <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+        <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+    </Style>
+
     <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource OnMouseOverRowCollor}"/>
@@ -31,6 +36,7 @@
     <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="{StaticResource HeaderBackgroungColor}"/>
         <Setter Property="FontStyle" Value="{StaticResource HeaderFontColor}"/>
+        <Setter Property="TextBlock.TextAlignment" Value="Center"/>
     </Style>
 
 </ResourceDictionary>

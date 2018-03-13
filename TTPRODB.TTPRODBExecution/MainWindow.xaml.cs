@@ -60,6 +60,7 @@ namespace TTPRODB.TTPRODBExecution
                 //resultTables[i].ColumnHeaderStyle = (Style) Application.Current.Resources["DataGridHeaderStyle"];
                 resultTables[i].Style = (Style) Application.Current.Resources["DataGridStyle"];
                 resultTables[i].RowStyle = (Style) Application.Current.Resources["DataGridRowStyle"];
+                resultTables[i].CellStyle = (Style) Application.Current.Resources["DataGridCellStyle"];
                 resultTables[i].AutoGenerateColumns = false;
                 resultTables[i].Columns.Add(new DataGridTextColumn()
                     { Header = "Name", Binding = new Binding("Name") });

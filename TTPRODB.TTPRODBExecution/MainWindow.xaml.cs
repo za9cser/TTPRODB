@@ -1,27 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data.Common;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using TTPRODB.BuisnessLogic;
 using TTPRODB.BuisnessLogic.Entities;
 using TTPRODB.DatabaseCommunication;
 using TTPRODB.TTPRODBExecution.Filters;
 using static System.Reflection.BindingFlags;
-using static TTPRODB.DatabaseCommunication.DbQuering;
 
 namespace TTPRODB.TTPRODBExecution
 {
@@ -57,7 +44,39 @@ namespace TTPRODB.TTPRODBExecution
 
         private void InitResultTables()
         {
-            
+            resultTables = new DataGrid[characteristics.GetLength(0)];
+            for (int i = 0; i < characteristics.GetLength(0); i++)
+            {
+                resultTables[i] = new DataGrid();
+                resultTables[i].AutoGenerateColumns = false;
+                resultTables[i].Columns.Add(new DataGridTextColumn()
+                    { Header = "Name", Binding = new Binding("Name") });
+                resultTables[i].Columns.Add(new DataGridTextColumn()
+                    { Header = "Ratings", Binding = new Binding("Ratings") });
+                foreach (string name in characteristics[i])
+                {
+                    resultTables[i].Columns.Add(new DataGridTextColumn()
+                        { Header = name, Binding = new Binding(name) });
+                }
+
+                switch (i)
+                {
+                    // Rubber
+                    case 1:
+                        resultTables[i].Columns.Add(new DataGridCheckBoxColumn()
+                            { Header = "Tensor", Binding = new Binding("Tensor"), IsReadOnly = true});
+                        resultTables[i].Columns.Add(new DataGridCheckBoxColumn()
+                            { Header = "Anti", Binding = new Binding("Anti"), IsReadOnly = true});
+                        break;
+                    // Pipses
+                    case 2:
+                        resultTables[i].Columns.Add(new DataGridTextColumn()
+                            { Header = "Pips type", Binding = new Binding("PipsType")});
+                        break;
+                }
+                Grid.SetRow(resultTables[i], 2);
+                Grid.SetColumn(resultTables[i], 1);
+            }
         }
 
         public void UpdateMode(Visibility contentVisibility)
@@ -123,35 +142,20 @@ namespace TTPRODB.TTPRODBExecution
 
         private void SearchButtonOnClick(object sender, RoutedEventArgs e)
         {
-            
+            var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
+            if (item.GetType() == typeof(DataGrid))
+            {
+                ContentGrid.Children.Remove(item);
+            }
             // get items
             List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
             // build table
-            DataGrid table = CreateTable(InventorySearchComboBox.SelectedIndex);
+            DataGrid table = resultTables[InventorySearchComboBox.SelectedIndex];
+            table.Items.Clear();
             table.ItemsSource = items;
             Grid.SetRow(table, 2);
             Grid.SetColumn(table, 1);
             ContentGrid.Children.Add(table);
         }
-
-        private DataGrid CreateTable(int selectedIndex)
-        {
-            DataGrid table = new DataGrid {AutoGenerateColumns = false};
-            table.Columns.Add(new DataGridTextColumn() {Header = "Name", Binding = new Binding("Name")});
-            foreach (string name in characteristics[selectedIndex])
-            {
-                table.Columns.Add(new DataGridTextColumn() {Header = name, Binding = new Binding(name)});
-            }
-
-            table.Columns.Add(new DataGridTextColumn() {Header = "Ratings", Binding = new Binding("Ratings")});
-            
-            return table;
-
-        }
     }
-
-    //public class ViewModel
-    //{
-    //    public string[] InvetoryTypeArray { get; set; } = { "Blade", "Rubber", "Pips" };
-    //}
 }

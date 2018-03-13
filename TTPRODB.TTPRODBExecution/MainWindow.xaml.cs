@@ -24,6 +24,7 @@ namespace TTPRODB.TTPRODBExecution
         private string[][] characteristics;
         private DataGrid[] resultTables;
         private ViewMode mode = ViewMode.Search;
+        private Label notFoundMessageLabel;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,6 +33,13 @@ namespace TTPRODB.TTPRODBExecution
             {
                 UpdateMode(Visibility.Collapsed);
             }
+            notFoundMessageLabel = new Label()
+            {
+                Content = "Nothing found by your query",
+                FontSize = 18,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
             // init characteristics
             InitCharacterisArrays();
             InitResultTables();
@@ -119,7 +127,7 @@ namespace TTPRODB.TTPRODBExecution
         private void BuildFilters(int selectedIndex)
         {
             CharacteristicPanel.Children.Clear();
-            //CharacteristicPanel.MaxHeight = 150; 
+            
             foreach (string characteristic in characteristics[selectedIndex])
             {
                 CharacteristicPanel.Children.Add(new CharacteristicFilter(characteristic));
@@ -143,12 +151,21 @@ namespace TTPRODB.TTPRODBExecution
         private void SearchButtonOnClick(object sender, RoutedEventArgs e)
         {
             var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
-            if (item.GetType() == typeof(DataGrid))
+            if (item.GetType() == typeof(DataGrid) || item.GetType() == typeof(Label))
             {
                 ContentGrid.Children.Remove(item);
             }
+            
             // get items
             List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
+            if (items == null)
+            {
+                Grid.SetRow(notFoundMessageLabel, 2);
+                Grid.SetColumn(notFoundMessageLabel, 1);
+                ContentGrid.Children.Add(notFoundMessageLabel);
+                return;
+            }
+
             // build table
             DataGrid table = resultTables[InventorySearchComboBox.SelectedIndex];
             table.Items.Clear();

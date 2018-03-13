@@ -304,6 +304,10 @@ namespace TTPRODB.DatabaseCommunication
                 }
             }
 
+            if (items.Count == 0)
+            {
+                return null;
+            }
             return items;
         }
     }

@@ -55,16 +55,24 @@ namespace TTPRODB.TTPRODBExecution
             resultTables = new DataGrid[characteristics.GetLength(0)];
             for (int i = 0; i < characteristics.GetLength(0); i++)
             {
+                
                 resultTables[i] = new DataGrid();
+                //resultTables[i].ColumnHeaderStyle = (Style) Application.Current.Resources["DataGridHeaderStyle"];
+                resultTables[i].Style = (Style) Application.Current.Resources["DataGridStyle"];
+                resultTables[i].RowStyle = (Style) Application.Current.Resources["DataGridRowStyle"];
+                resultTables[i].CellStyle = (Style) Application.Current.Resources["DataGridCellStyle"];
                 resultTables[i].AutoGenerateColumns = false;
                 resultTables[i].Columns.Add(new DataGridTextColumn()
                     { Header = "Name", Binding = new Binding("Name") });
+                
                 resultTables[i].Columns.Add(new DataGridTextColumn()
                     { Header = "Ratings", Binding = new Binding("Ratings") });
+                
                 foreach (string name in characteristics[i])
                 {
                     resultTables[i].Columns.Add(new DataGridTextColumn()
-                        { Header = name, Binding = new Binding(name) });
+                        { Header = name, Binding = new Binding(name), });
+                    
                 }
 
                 switch (i)
@@ -73,13 +81,16 @@ namespace TTPRODB.TTPRODBExecution
                     case 1:
                         resultTables[i].Columns.Add(new DataGridCheckBoxColumn()
                             { Header = "Tensor", Binding = new Binding("Tensor"), IsReadOnly = true});
+                        
                         resultTables[i].Columns.Add(new DataGridCheckBoxColumn()
                             { Header = "Anti", Binding = new Binding("Anti"), IsReadOnly = true});
+                       
                         break;
                     // Pipses
                     case 2:
                         resultTables[i].Columns.Add(new DataGridTextColumn()
                             { Header = "Pips type", Binding = new Binding("PipsType")});
+                        
                         break;
                 }
                 Grid.SetRow(resultTables[i], 2);
@@ -150,29 +161,39 @@ namespace TTPRODB.TTPRODBExecution
 
         private void SearchButtonOnClick(object sender, RoutedEventArgs e)
         {
-            var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
-            if (item.GetType() == typeof(DataGrid) || item.GetType() == typeof(Label))
+            try
             {
-                ContentGrid.Children.Remove(item);
-            }
-            
-            // get items
-            List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
-            if (items == null)
-            {
-                Grid.SetRow(notFoundMessageLabel, 2);
-                Grid.SetColumn(notFoundMessageLabel, 1);
-                ContentGrid.Children.Add(notFoundMessageLabel);
-                return;
-            }
+                var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
+                if (item.GetType() == typeof(DataGrid) || item.GetType() == typeof(Label))
+                {
+                    ContentGrid.Children.Remove(item);
+                }
 
-            // build table
-            DataGrid table = resultTables[InventorySearchComboBox.SelectedIndex];
-            table.Items.Clear();
-            table.ItemsSource = items;
-            Grid.SetRow(table, 2);
-            Grid.SetColumn(table, 1);
-            ContentGrid.Children.Add(table);
+                // get items
+                List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
+                if (items == null)
+                {
+                    Grid.SetRow(notFoundMessageLabel, 2);
+                    Grid.SetColumn(notFoundMessageLabel, 1);
+                    ContentGrid.Children.Add(notFoundMessageLabel);
+                    return;
+                }
+
+                // build table
+                DataGrid table = resultTables[InventorySearchComboBox.SelectedIndex];
+                table.Items.Clear();
+                table.ItemsSource = items;
+                Grid.SetRow(table, 2);
+                Grid.SetColumn(table, 1);
+                ContentGrid.Children.Add(table);
+                //table.Width = table.Columns.Sum(x => x.ActualWidth);
+                //table.MaxWidth = 500;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
         }
     }
 }

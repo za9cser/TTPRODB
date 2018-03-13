@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
@@ -30,8 +31,11 @@ namespace TTPRODB.TTPRODBExecution
     public partial class MainWindow : Window
     {
         string[] invetoryTypeArray { get; set; } = { "Blade", "Rubber", "Pips" };
+
+        private const BindingFlags OnlyClassBindingFlags = Public | Instance | DeclaredOnly;
         private Type[] inventoryTypes = {typeof(Blade), typeof(Rubber), typeof(Pips)};
         private string[][] characteristics;
+        private DataGrid[] resultTables;
         private ViewMode mode = ViewMode.Search;
         public MainWindow()
         {
@@ -43,11 +47,17 @@ namespace TTPRODB.TTPRODBExecution
             }
             // init characteristics
             InitCharacterisArrays();
+            InitResultTables();
             // init comboboxes
             InventorySearchComboBox.ItemsSource = invetoryTypeArray;
             InventoryFilterComboBox.ItemsSource = invetoryTypeArray;
             InventoryFilterComboBox.SelectedIndex = 0;
             InventorySearchComboBox.SelectedIndex = 0;
+        }
+
+        private void InitResultTables()
+        {
+            
         }
 
         public void UpdateMode(Visibility contentVisibility)
@@ -61,17 +71,20 @@ namespace TTPRODB.TTPRODBExecution
             ContentGrid.Children.Add(updateDatabase);
         }
 
-        // init characteristics of items
+        // init string array of item characteristics
         private void InitCharacterisArrays()
         {
-            bool SelectDouble(PropertyInfo x) => x.PropertyType == typeof(double);
-
             characteristics = new[]
             {
-                typeof(Blade).GetProperties(Public | Instance | DeclaredOnly).Where(SelectDouble).Select(x => x.Name).ToArray(),
-                typeof(Rubber).GetProperties(Public | Instance | DeclaredOnly).Where(SelectDouble).Select(x => x.Name).ToArray(),
-                typeof(Pips).GetProperties(Public | Instance | DeclaredOnly).Where(SelectDouble).Select(x => x.Name).ToArray()
+                typeof(Blade).GetProperties(OnlyClassBindingFlags).Where(SelectDouble).Select(x => x.Name).ToArray(),
+                typeof(Rubber).GetProperties(OnlyClassBindingFlags).Where(SelectDouble).Select(x => x.Name).ToArray(),
+                typeof(Pips).GetProperties(OnlyClassBindingFlags).Where(SelectDouble).Select(x => x.Name).ToArray()
             };
+        }
+
+        bool SelectDouble(PropertyInfo x)
+        {
+            return x.PropertyType == typeof(double);
         }
 
         private void InventoryFilterComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -91,7 +104,6 @@ namespace TTPRODB.TTPRODBExecution
             foreach (string characteristic in characteristics[selectedIndex])
             {
                 CharacteristicPanel.Children.Add(new CharacteristicFilter(characteristic));
-                //CharacteristicPanel.MaxHeight += 40;
             }
 
             switch (selectedIndex)
@@ -99,21 +111,42 @@ namespace TTPRODB.TTPRODBExecution
                 // Rubber
                 case 1:
                     CharacteristicPanel.Children.Add(new RubberTypeFilter());
-                    //CharacteristicPanel.MaxHeight += 50; 
                     break;
                 // Pipses
                 case 2:
                     CharacteristicPanel.Children.Add(new PipsTypeFilter());
-                    //CharacteristicPanel.MaxHeight += 64;
                     break;
             }
 
-            //CharacteristicPanel.MaxHeight += 20;
+            
         }
 
         private void SearchButtonOnClick(object sender, RoutedEventArgs e)
         {
+            
+            // get items
             List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
+            // build table
+            DataGrid table = CreateTable(InventorySearchComboBox.SelectedIndex);
+            table.ItemsSource = items;
+            Grid.SetRow(table, 2);
+            Grid.SetColumn(table, 1);
+            ContentGrid.Children.Add(table);
+        }
+
+        private DataGrid CreateTable(int selectedIndex)
+        {
+            DataGrid table = new DataGrid {AutoGenerateColumns = false};
+            table.Columns.Add(new DataGridTextColumn() {Header = "Name", Binding = new Binding("Name")});
+            foreach (string name in characteristics[selectedIndex])
+            {
+                table.Columns.Add(new DataGridTextColumn() {Header = name, Binding = new Binding(name)});
+            }
+
+            table.Columns.Add(new DataGridTextColumn() {Header = "Ratings", Binding = new Binding("Ratings")});
+            
+            return table;
+
         }
     }
 

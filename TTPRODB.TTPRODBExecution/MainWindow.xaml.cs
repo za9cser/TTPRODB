@@ -240,7 +240,7 @@ namespace TTPRODB.TTPRODBExecution
                     {
                         IFilter filter = CharacteristicPanel.Children[CharacteristicPanel.Children.Count - 2] as IFilter;
                         parameters = filter.MakeQuery(out query);
-                        if (query == String.Empty)
+                        if (query != String.Empty)
                         {
                             queryStringBuilder.Append(query);
                             cmd.Parameters.AddRange(parameters);

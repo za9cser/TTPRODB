@@ -28,7 +28,27 @@ namespace TTPRODB.TTPRODBExecution.Filters
 
         public SqlParameter[] MakeQuery(out string query)
         {
-            throw new NotImplementedException();
+            string[] selectedTypes = PipsTypePanel.Children.OfType<CheckBox>().
+                Where(x => x.IsChecked == true).Select(x => x.Content.ToString()).ToArray();
+            if (selectedTypes.Length == 0)
+            {
+                query = string.Empty;
+                return null;
+            }
+
+            SqlParameter[] parameters = new SqlParameter[selectedTypes.Length];
+            StringBuilder queryStringBuilder = new StringBuilder(" AND (");
+            query = " AND (";
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                queryStringBuilder.Append($"PipsType = @pipsType{i} OR ");
+                parameters[i] = new SqlParameter($"@pipsType{i}", selectedTypes[i]);
+            }
+
+            queryStringBuilder = queryStringBuilder.Remove(queryStringBuilder.Length - 4, 4);
+            queryStringBuilder.Append(")");
+            query = queryStringBuilder.ToString();
+            return parameters;
         }
     }
 }

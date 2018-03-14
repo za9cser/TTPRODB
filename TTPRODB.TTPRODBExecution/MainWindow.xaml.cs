@@ -215,11 +215,8 @@ namespace TTPRODB.TTPRODBExecution
                     StringBuilder queryStringBuilder = new StringBuilder(
                         $"SELECT * FROM Item inner JOIN {InventoryTable} AS inventory ON Item.ID = inventory.Item_ID WHERE ");
 
-                    SqlParameter[] parameters;
-                    string query;
-
                     // selected producers
-                    parameters = ProducersFilterControl.MakeQuery(out query);
+                    SqlParameter[] parameters = ProducersFilterControl.MakeQuery(out string query);
                     if (query != String.Empty)
                     {
                         queryStringBuilder.Append(query);
@@ -233,7 +230,10 @@ namespace TTPRODB.TTPRODBExecution
                         parameters = characteristicFilter.MakeQuery(out query);
                         cmd.Parameters.AddRange(parameters);
                         queryStringBuilder.Append(query);
+                        queryStringBuilder.Append(" AND ");
                     }
+
+                    queryStringBuilder.Remove(queryStringBuilder.Length - 6, 5);
 
                     // for rubber and pipses
                     if (InventoryFilterComboBox.SelectedIndex > 0)

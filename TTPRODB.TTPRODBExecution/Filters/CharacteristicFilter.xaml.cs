@@ -26,7 +26,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
             get
             {
                 bool result = double.TryParse(Value1TextBox.Text, out double value);
-                if (!result || value < 0.0)
+                if (!result || value < 0.0 || value > 10.0)
                 {
                     return 0.0;
                 }
@@ -71,7 +71,13 @@ namespace TTPRODB.TTPRODBExecution.Filters
 
         private void ValueTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (Char.IsDigit(Convert.ToChar(e.Key.ToString())) || e.Key == Key.OemComma || e.Key == Key.Back || e.Key == Key.Delete)
+            if ((e.Key >= Key.D0 && e.Key <= Key.D9) || (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9) ||
+                e.Key == Key.Back || e.Key == Key.Delete ||e.Key == Key.OemComma ||
+                e.Key == Key.Right || e.Key == Key.Left)
+            {
+                e.Handled = false;
+            }
+            else
             {
                 e.Handled = true;
             }
@@ -79,7 +85,13 @@ namespace TTPRODB.TTPRODBExecution.Filters
 
         public SqlParameter[] MakeQuery(out string query)
         {
-            throw new NotImplementedException();
+            query =
+                $"inventory.{TitleTextBlock.Text} >= @lowerLimit AND inventory.{TitleTextBlock.Text} <= @upperLimit ";
+            SqlParameter[] parameters = {
+                new SqlParameter("@lowerLimit", Value1),
+                new SqlParameter("@upperLimit", Value2),
+            };
+            return parameters;
         }
     }
 }

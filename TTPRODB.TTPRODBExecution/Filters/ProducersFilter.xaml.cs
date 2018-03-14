@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Windows.Controls;
+using TTPRODB.BuisnessLogic.Entities;
 using TTPRODB.DatabaseCommunication;
 
 namespace TTPRODB.TTPRODBExecution.Filters
@@ -6,8 +9,9 @@ namespace TTPRODB.TTPRODBExecution.Filters
     /// <summary>
     /// Interaction logic for ProducersFilter.xaml
     /// </summary>
-    public partial class ProducersFilter : UserControl
+    public partial class ProducersFilter : UserControl, IFilter
     {
+        private Dictionary<string, Producer> producers;
         public ProducersFilter()
         {
             InitializeComponent();
@@ -16,11 +20,17 @@ namespace TTPRODB.TTPRODBExecution.Filters
 
         public void FillProducerList()
         {
-            foreach (var producer in DbQuering.GetAllProducers())
+            producers = DbQuering.GetAllProducers();
+            foreach (KeyValuePair<string, Producer> producer in producers)
             {
                 CheckBox producerCb = new CheckBox() { Content = producer.Value.Name };
                 ProducersStackPanel.Children.Add(producerCb);
             }
+        }
+
+        public SqlParameter[] MakeQuery(out string query)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

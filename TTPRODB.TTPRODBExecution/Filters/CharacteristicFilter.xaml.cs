@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
     /// <summary>
     /// Interaction logic for CharacteristicFilter.xaml
     /// </summary>
-    public partial class CharacteristicFilter : UserControl
+    public partial class CharacteristicFilter : UserControl, IFilter
     {
         public double Value1
         {
@@ -74,6 +75,11 @@ namespace TTPRODB.TTPRODBExecution.Filters
             {
                 e.Handled = true;
             }
+        }
+
+        public SqlParameter[] MakeQuery(out string query)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -163,11 +166,7 @@ namespace TTPRODB.TTPRODBExecution
         {
             try
             {
-                var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
-                if (item.GetType() == typeof(DataGrid) || item.GetType() == typeof(Label))
-                {
-                    ContentGrid.Children.Remove(item);
-                }
+                ClearResultColumn();
 
                 // get items
                 List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
@@ -186,14 +185,76 @@ namespace TTPRODB.TTPRODBExecution
                 Grid.SetRow(table, 2);
                 Grid.SetColumn(table, 1);
                 ContentGrid.Children.Add(table);
-                //table.Width = table.Columns.Sum(x => x.ActualWidth);
-                //table.MaxWidth = 500;
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
                 throw;
             }
+        }
+
+        private void ClearResultColumn()
+        {
+            var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
+            if (item.GetType() == typeof(DataGrid) || item.GetType() == typeof(Label))
+            {
+                ContentGrid.Children.Remove(item);
+            }
+        }
+
+        private void FilterButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            ClearResultColumn();
+            using (var connection = new SqlConnection(DbConnect.DbConnectionString))
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    string InventoryTable = invetoryTypeArray[InventoryFilterComboBox.SelectedIndex];
+
+                    StringBuilder queryStringBuilder = new StringBuilder(
+                        $"SELECT * FROM Item inner JOIN {InventoryTable} AS inventory ON Item.ID = inventory.Item_ID WHERE ");
+
+                    SqlParameter[] parameters;
+                    string query;
+
+                    // selected producers
+                    parameters = ProducersFilterControl.MakeQuery(out query);
+                    if (query != String.Empty)
+                    {
+                        queryStringBuilder.Append(query);
+                        cmd.Parameters.AddRange(parameters);
+                    }
+
+                    // charactericstics
+                    foreach (CharacteristicFilter characteristicFilter in CharacteristicPanel.Children
+                        .OfType<CharacteristicFilter>())
+                    {
+                        parameters = characteristicFilter.MakeQuery(out query);
+                        cmd.Parameters.AddRange(parameters);
+                        queryStringBuilder.Append(query);
+                    }
+
+                    // for rubber and pipses
+                    if (InventoryFilterComboBox.SelectedIndex > 0)
+                    {
+                        IFilter filter = CharacteristicPanel.Children[CharacteristicPanel.Children.Count - 2] as IFilter;
+                        parameters = filter.MakeQuery(out query);
+                        queryStringBuilder.Append(query);
+                        cmd.Parameters.AddRange(parameters);
+                    }
+
+                    // ratings filter
+                    IFilter ratingFilter = CharacteristicPanel.Children[CharacteristicPanel.Children.Count - 1] as IFilter;
+                    parameters = ratingFilter.MakeQuery(out query);
+                    queryStringBuilder.Append(query);
+                    cmd.Parameters.AddRange(parameters);
+
+                    cmd.CommandText = queryStringBuilder.ToString();
+                }
+            }
+            
+
         }
     }
 }

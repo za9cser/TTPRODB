@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,11 +19,16 @@ namespace TTPRODB.TTPRODBExecution.Filters
     /// <summary>
     /// Interaction logic for PipsTypeFilter.xaml
     /// </summary>
-    public partial class PipsTypeFilter : UserControl
+    public partial class PipsTypeFilter : UserControl, IFilter
     {
         public PipsTypeFilter()
         {
             InitializeComponent();
+        }
+
+        public SqlParameter[] MakeQuery(out string query)
+        {
+            throw new NotImplementedException();
         }
     }
 }

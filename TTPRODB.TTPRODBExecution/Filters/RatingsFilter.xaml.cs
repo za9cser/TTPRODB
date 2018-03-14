@@ -19,7 +19,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
     /// <summary>
     /// Interaction logic for RatingsFilter.xaml
     /// </summary>
-    public partial class RatingsFilter : UserControl
+    public partial class RatingsFilter : UserControl, IFilter
     {
         public int RatingCount
         {

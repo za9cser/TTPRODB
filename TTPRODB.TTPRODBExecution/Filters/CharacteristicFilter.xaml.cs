@@ -57,20 +57,20 @@ namespace TTPRODB.TTPRODBExecution.Filters
         {
             InitializeComponent();
             TitleTextBlock.Text = title;
-            Value1TextBox.Text = "0.0";
-            Value2TextBox.Text = "10.0";
+            Value1TextBox.Text = "0,0";
+            Value2TextBox.Text = "10,0";
         }
 
         public CharacteristicFilter()
         {
             InitializeComponent();
-            Value1TextBox.Text = "0.0";
-            Value2TextBox.Text = "10.0";
+            Value1TextBox.Text = "0,0";
+            Value2TextBox.Text = "10,0";
         }
 
         private void ValueTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (Char.IsDigit(Convert.ToChar(e.Key.ToString())) || e.Key == Key.OemComma)
+            if (Char.IsDigit(Convert.ToChar(e.Key.ToString())) || e.Key == Key.OemComma || e.Key == Key.Back || e.Key == Key.Delete)
             {
                 e.Handled = true;
             }

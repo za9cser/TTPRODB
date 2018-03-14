@@ -156,7 +156,7 @@ namespace TTPRODB.TTPRODBExecution
                     break;
             }
 
-            
+            CharacteristicPanel.Children.Add(new RatingsFilter());
         }
 
         private void SearchButtonOnClick(object sender, RoutedEventArgs e)

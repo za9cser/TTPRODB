@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,6 +57,11 @@ namespace TTPRODB.TTPRODBExecution.Filters
             {
                 upDown.Value = upDown.Minimum;
             }
+        }
+
+        public SqlParameter[] MakeQuery(out string query)
+        {
+            throw new NotImplementedException();
         }
     }
 }

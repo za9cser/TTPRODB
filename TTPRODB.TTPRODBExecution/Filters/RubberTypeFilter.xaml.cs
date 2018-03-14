@@ -49,7 +49,23 @@ namespace TTPRODB.TTPRODBExecution.Filters
 
         public SqlParameter[] MakeQuery(out string query)
         {
-            throw new NotImplementedException();
+            RadioButton selectedType =
+                RubberTypePanel.Children.OfType<RadioButton>().FirstOrDefault(x => x.IsChecked == true);
+            if (selectedType == null)
+            {
+                query = String.Empty;
+                return null;
+            }
+
+            query = $" AND {selectedType.Content} = @state";
+
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@state", true)
+            };
+
+            
+            return parameters;
         }
     }
 }

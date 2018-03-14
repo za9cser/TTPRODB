@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -35,6 +36,12 @@ namespace TTPRODB.TTPRODBExecution.Filters
             // get ID of selected producers
             string[] selectedProducers = ProducersStackPanel.Children.OfType<CheckBox>().Where(x => (bool) x.IsChecked)
                 .Select(x => x.Content.ToString()).ToArray();
+            // if producers didn't choosen return empty string
+            if (selectedProducers.Length == 0)
+            {
+                query = String.Empty;
+                return null;
+            }
             int[] producersIds = new int[selectedProducers.Length]; 
             for (int i = 0; i < selectedProducers.Length; i++)
             {
@@ -51,7 +58,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
             }
 
             queryStringBuilder = queryStringBuilder.Remove(queryStringBuilder.Length - 1, 1);
-            queryStringBuilder.Append(") ");
+            queryStringBuilder.Append(") AND ");
             query = queryStringBuilder.ToString();
             return parameters;
         }

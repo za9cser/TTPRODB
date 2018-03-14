@@ -233,15 +233,18 @@ namespace TTPRODB.TTPRODBExecution
                         queryStringBuilder.Append(" AND ");
                     }
 
-                    queryStringBuilder.Remove(queryStringBuilder.Length - 6, 5);
+                    queryStringBuilder = queryStringBuilder.Remove(queryStringBuilder.Length - 6, 5);
 
                     // for rubber and pipses
                     if (InventoryFilterComboBox.SelectedIndex > 0)
                     {
                         IFilter filter = CharacteristicPanel.Children[CharacteristicPanel.Children.Count - 2] as IFilter;
                         parameters = filter.MakeQuery(out query);
-                        queryStringBuilder.Append(query);
-                        cmd.Parameters.AddRange(parameters);
+                        if (query == String.Empty)
+                        {
+                            queryStringBuilder.Append(query);
+                            cmd.Parameters.AddRange(parameters);
+                        }
                     }
 
                     // ratings filter

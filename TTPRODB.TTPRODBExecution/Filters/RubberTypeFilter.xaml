@@ -9,7 +9,7 @@
     <Border Style="{StaticResource ResourceKey=FilterBorderStyle}" >
         <StackPanel>
             <TextBlock Text="Rubber type" Style="{StaticResource ResourceKey=FilterTitleStyle}"/>
-            <StackPanel Margin="5,0,0,0">
+            <StackPanel Margin="5,0,0,0" Name="RubberTypePanel">
                 <RadioButton Name="TensorRadioButton" Content="Tensor" Checked="TensorRadioButtonOnChecked"/>
                 <RadioButton Name="AntiRadioButton" Content="Anti-spin" Checked="AntiRadioButtonOnChecked"/>
             </StackPanel>

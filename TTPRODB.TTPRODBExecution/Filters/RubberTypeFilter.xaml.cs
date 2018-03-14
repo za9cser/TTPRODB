@@ -57,7 +57,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
                 return null;
             }
 
-            query = $" AND {selectedType.Content} = @state";
+            query = $" AND inventory.{selectedType.Content} = @state";
 
             SqlParameter[] parameters =
             {

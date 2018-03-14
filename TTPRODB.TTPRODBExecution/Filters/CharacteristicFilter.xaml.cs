@@ -73,7 +73,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
         {
             if ((e.Key >= Key.D0 && e.Key <= Key.D9) || (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9) ||
                 e.Key == Key.Back || e.Key == Key.Delete ||e.Key == Key.OemComma ||
-                e.Key == Key.Right || e.Key == Key.Left)
+                e.Key == Key.Right || e.Key == Key.Left || e.Key == Key.Tab)
             {
                 e.Handled = false;
             }
@@ -85,11 +85,12 @@ namespace TTPRODB.TTPRODBExecution.Filters
 
         public SqlParameter[] MakeQuery(out string query)
         {
+            string characteristic = TitleTextBlock.Text;
             query =
-                $"inventory.{TitleTextBlock.Text} >= @lowerLimit AND inventory.{TitleTextBlock.Text} <= @upperLimit ";
+                $"inventory.{characteristic} >= @{characteristic}lowerLimit AND inventory.{characteristic} <= @{characteristic}upperLimit ";
             SqlParameter[] parameters = {
-                new SqlParameter("@lowerLimit", Value1),
-                new SqlParameter("@upperLimit", Value2),
+                new SqlParameter($"@{characteristic}lowerLimit", Value1),
+                new SqlParameter($"@{characteristic}upperLimit", Value2),
             };
             return parameters;
         }

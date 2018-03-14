@@ -172,15 +172,13 @@ namespace TTPRODB.TTPRODBExecution
                 List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
                 if (items == null)
                 {
-                    Grid.SetRow(notFoundMessageLabel, 2);
-                    Grid.SetColumn(notFoundMessageLabel, 1);
-                    ContentGrid.Children.Add(notFoundMessageLabel);
+                    ShowNotFoundMessage();
                     return;
                 }
 
                 // build table
                 DataGrid table = resultTables[InventorySearchComboBox.SelectedIndex];
-                table.Items.Clear();
+                table.ItemsSource = null;
                 table.ItemsSource = items;
                 Grid.SetRow(table, 2);
                 Grid.SetColumn(table, 1);
@@ -191,6 +189,13 @@ namespace TTPRODB.TTPRODBExecution
                 Console.WriteLine(exception);
                 throw;
             }
+        }
+
+        private void ShowNotFoundMessage()
+        {
+            Grid.SetRow(notFoundMessageLabel, 2);
+            Grid.SetColumn(notFoundMessageLabel, 1);
+            ContentGrid.Children.Add(notFoundMessageLabel);
         }
 
         private void ClearResultColumn()
@@ -205,8 +210,10 @@ namespace TTPRODB.TTPRODBExecution
         private void FilterButtonOnClick(object sender, RoutedEventArgs e)
         {
             ClearResultColumn();
+            List<dynamic> items = new List<dynamic>();
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
             {
+                connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
@@ -254,9 +261,32 @@ namespace TTPRODB.TTPRODBExecution
                     cmd.Parameters.AddRange(parameters);
 
                     cmd.CommandText = queryStringBuilder.ToString();
+
+                    SqlDataReader sqlDataReader = cmd.ExecuteReader();
+
+                    ConstructorInfo constructorInfo = inventoryTypes[InventoryFilterComboBox.SelectedIndex].GetConstructor(new[] { typeof(SqlDataReader) });
+
+                    while (sqlDataReader.Read())
+                    {
+                        object tempItem = constructorInfo.Invoke(new[] { sqlDataReader });
+                        dynamic item = Convert.ChangeType(tempItem, inventoryTypes[InventoryFilterComboBox.SelectedIndex]);
+                        items.Add(item);
+                    }
                 }
             }
-            
+
+            if (items.Count == 0)
+            {
+                ShowNotFoundMessage();
+                return;
+            }
+
+            DataGrid table = resultTables[InventoryFilterComboBox.SelectedIndex];
+            table.ItemsSource = null;
+            table.ItemsSource = items;
+            Grid.SetRow(table, 2);
+            Grid.SetColumn(table, 1);
+            ContentGrid.Children.Add(table);
 
         }
     }

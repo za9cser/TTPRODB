@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -38,10 +39,9 @@ namespace TTPRODB.TTPRODBExecution.Filters
 
             SqlParameter[] parameters = new SqlParameter[selectedTypes.Length];
             StringBuilder queryStringBuilder = new StringBuilder(" AND (");
-            query = " AND (";
             for (int i = 0; i < parameters.Length; i++)
             {
-                queryStringBuilder.Append($"PipsType = @pipsType{i} OR ");
+                queryStringBuilder.Append($"inventory.PipsType = @pipsType{i} OR ");
                 parameters[i] = new SqlParameter($"@pipsType{i}", selectedTypes[i]);
             }
 

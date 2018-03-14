@@ -62,7 +62,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
 
         public SqlParameter[] MakeQuery(out string query)
         {
-            query = " AND Ratings >= @ratingsCount";
+            query = " AND Item.Ratings >= @ratingsCount";
             SqlParameter[] parameters =
             {
                 new SqlParameter("@ratingsCount", RatingCount)

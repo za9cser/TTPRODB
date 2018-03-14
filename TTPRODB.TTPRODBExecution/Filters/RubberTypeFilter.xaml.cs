@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
     /// <summary>
     /// Interaction logic for RubberTypeFilter.xaml
     /// </summary>
-    public partial class RubberTypeFilter : UserControl
+    public partial class RubberTypeFilter : UserControl, IFilter
     {
         public RubberTypeFilter()
         {
@@ -44,6 +45,27 @@ namespace TTPRODB.TTPRODBExecution.Filters
             }
 
             AntiRadioButton.IsChecked = true;
+        }
+
+        public SqlParameter[] MakeQuery(out string query)
+        {
+            RadioButton selectedType =
+                RubberTypePanel.Children.OfType<RadioButton>().FirstOrDefault(x => x.IsChecked == true);
+            if (selectedType == null)
+            {
+                query = String.Empty;
+                return null;
+            }
+
+            query = $" AND inventory.{selectedType.Content} = @state";
+
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@state", true)
+            };
+
+            
+            return parameters;
         }
     }
 }

@@ -32,13 +32,13 @@
                 <Label Content="Inventory"/>
                 <ComboBox Name="InventoryFilterComboBox" SelectedIndex="0" Background="White"
                             ItemsSource="{Binding Path=InvetoryTypeArray}" SelectionChanged="InventoryFilterComboBoxOnSelectionChanged"/>
-                <local:ProducersFilter/>
+                <local:ProducersFilter x:Name="ProducersFilterControl"/>
             </StackPanel>
                 
         <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto">
             <StackPanel Name="CharacteristicPanel" MaxHeight="300" CanVerticallyScroll="True"/>
         </ScrollViewer>
-            <Button Name="FilterButton" Content="Filter"  Height="25"/>
+            <Button Name="FilterButton" Content="Filter"  Height="25" Click="FilterButtonOnClick"/>
         </StackPanel>
 
 

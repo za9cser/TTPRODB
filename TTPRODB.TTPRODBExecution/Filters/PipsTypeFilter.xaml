@@ -9,9 +9,9 @@
     <Border Style="{StaticResource ResourceKey=FilterBorderStyle}" >
         <StackPanel>
             <TextBlock Text="Pips type" Style="{StaticResource ResourceKey=FilterTitleStyle}"/>
-            <StackPanel Margin="5,0,0,0">
+            <StackPanel Margin="5,0,0,0" Name="PipsTypePanel">
                 <CheckBox Name="ShortCheckbox" Content="Short"/>
-                <CheckBox Name="MiddleCheckBox" Content="Middle"/>
+                <CheckBox Name="MediumCheckBox" Content="Medium"/>
                 <CheckBox Name="LongCheckBox" Content="Long"/>
             </StackPanel>
         </StackPanel>

@@ -1,10 +1,9 @@
-﻿using HtmlAgilityPackExtensions;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
+using HtmlAgilityPackExtensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using TTPRODB.BuisnessLogic.Entities;
 
@@ -12,23 +11,34 @@ namespace TTPRODB.BuisnessLogic
 {
     public class ParseTTDb
     {
-        public string[] pages = { "blade", "rubber", "pips" };
-        private string site = "http://www.revspin.net/";
-        public List<Producer> ProducersList = new List<Producer>();
+        public string[] Pages = { "blade", "rubber", "pips" };
+        public Type[] Types = { typeof(Blade), typeof(Rubber), typeof(Pips)};
 
-        private int itemsCount;     // count of items on page
+        private string site = "http://www.revspin.net/";
+        public Dictionary<string, Producer> ProducerList;
+        public List<Producer> ProducersToInsert = new List<Producer>();
+
+        private int itemCount;     // count of items on page
         private int currentItemId;  // id of item in current type
         private int allItemId;      // id of item in whole list
 
         public dynamic constructor;    // constructor for item's current type
         public Type currentItemType;          // item's current type 
-        public PropertyInfo[] itemRatingsProperties;   // array of current type item's properties 
+        public List<PropertyInfo> itemRatingsProperties = new List<PropertyInfo>();   // array of current type item's properties 
         public bool pipsFlag;
+        
+        
+
+        public ParseTTDb(Dictionary<string, Producer> producers, int itemCount)
+        {
+            ProducerList = producers;
+            allItemId = itemCount;
+        }
 
         #region ParseItemsRegion
 
         // parsing items page
-        public List<dynamic> ParseItems(string page, Type itemType, BackgroundWorker bw)
+        public DataToSave ParseItems(string page, Type itemType, Dictionary<string, dynamic> itemList, BackgroundWorker bw, out int itemCount)
         {
             string url = site + page;
             var root = PageData.GetPageRootNode(url);
@@ -40,19 +50,31 @@ namespace TTPRODB.BuisnessLogic
             var itemsTables = root.Descendants().Where(x => x.GetAttributeValue("class", "").Equals("specscompare no-side-border-xxs")).ToList();
 
             // items count
-            itemsCount = GetItemsCount(itemsTables);
+            itemCount = GetItemsCount(itemsTables);
 
             // initialize constructor, type and properties of currect items
             constructor = itemType.GetConstructor(new Type[0]);
             currentItemType = itemType;
-            itemRatingsProperties = itemType.GetProperties().Where(x => x.GetType() == typeof(double)).ToArray();
+            itemRatingsProperties.Clear();
+            foreach (PropertyInfo property in itemType.GetProperties())
+            {
+                if (property.PropertyType == typeof(double))
+                {
+                    itemRatingsProperties.Add(property);
+                }
+
+            }
+
+            // LINQ not working
+            //itemRatingsProperties = propertyInfos.Where(x => x.PropertyType == typeof(double)).ToArray();
             if (currentItemType.Name == "Pips")
             {
                 pipsFlag = true;
             }
 
-            currentItemId = 0;
-            List<dynamic> itemsList = new List<dynamic>();
+            int counter = 0;
+            currentItemId = itemList.Count;
+            DataToSave dataToSave = new DataToSave();
             for (int i = 0; i < producersDivs.Count; i++)
             {
                 var producerId = InitializeProducer(producersDivs[i]);
@@ -60,13 +82,24 @@ namespace TTPRODB.BuisnessLogic
                 var itemsUrls = itemsTables[i].Descendants("a").ToList();
                 foreach (var itemUrl in itemsUrls)
                 {
-                    // get full items's url
+                    // get full item's url
                     url = site + itemUrl.Attributes["href"].Value;
-                    itemsList.Add(ParseItem(url, producerId));
+                    dynamic item = ParseItem(url, producerId);
+                    if (!itemList.ContainsKey(item.Name))
+                    {
+                        item.Id = ++currentItemId;
+                        item.ItemId = ++allItemId;
+                        dataToSave.ItemsToInsert.Add(item);
+                    }
+                    else if (itemList[item.name].Ratings != item.Ratings)
+                    {
+                        dataToSave.ItemsToUpdate.Add(item);
+                    }
+                    bw.ReportProgress(++counter, url);
                 }
             }
 
-            return itemsList;
+            return dataToSave;
         }        
 
         // get item count on the page
@@ -82,17 +115,16 @@ namespace TTPRODB.BuisnessLogic
             HtmlNode link = producerDiv.Descendants("a").First();
             // get producer's name 
             string name = GetCleanString(link.InnerText);
-            var producer = ProducersList.FirstOrDefault(x => x.Name == name);
             // check if the producer is on the producersList
-            if (producer != null)
+            if (ProducerList.ContainsKey(name))
             {
-                return producer.Id;
+                return ProducerList[name].Id;
             }
             // else add producer to list
-            producer = new Producer(ProducersList.Count + 1, name);
-            ProducersList.Add(producer);
-
-            return producer.Id;
+            Producer producer = new Producer(ProducerList.Count + 1, name);
+            ProducerList.Add(name, producer);
+            ProducersToInsert.Add(producer);
+            return ProducerList.Count;
         }
 
         // parse specific item
@@ -102,8 +134,7 @@ namespace TTPRODB.BuisnessLogic
             dynamic item = constructor.Invoke(new object[0]);
             // save starting item's info 
             item.ProducerId = producerId;
-            item.Id = ++currentItemId;
-            item.ItemId = ++allItemId;
+
             item.Url = url;
 
             // get data from first table on page

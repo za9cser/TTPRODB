@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="TTPRODB.TTPRODBExecution.Filters.RatingsFilter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TTPRODB.TTPRODBExecution.Filters"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             mc:Ignorable="d" 
+             Height="auto" Width="110" d:DesignHeight="64" MaxHeight="64">
+    <Border Style="{StaticResource ResourceKey=FilterBorderStyle}" >
+        <StackPanel>
+            <TextBlock Text="Ratings" Style="{StaticResource ResourceKey=FilterTitleStyle}"/>
+            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                <TextBlock Text="More than"/>
+                <xctk:IntegerUpDown Name="RatingsUpDown" Margin="2,0,0,0"  Value="5" TextAlignment="Center" Width="45" Minimum="1" KeyDown="RatingsUpDownOnKeyDown"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

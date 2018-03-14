@@ -41,8 +41,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DbConnect.cs" />
+    <Compile Include="DbQuering.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\DbStructure.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DbStructure.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DbStructure.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DbStructure.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TTPRODB.BuisnessLogic\TTPRODB.BuisnessLogic.csproj">
+      <Project>{E70C858A-F60B-4A52-BF09-3ED73E25274E}</Project>
+      <Name>TTPRODB.BuisnessLogic</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

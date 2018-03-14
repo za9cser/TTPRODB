@@ -1,29 +1,67 @@
-﻿namespace TTPRODB.BuisnessLogic.Entities
+﻿using System;
+using System.Data.Linq.Mapping;
+using System.Data.SqlClient;
+
+namespace TTPRODB.BuisnessLogic.Entities
 {
+    
     public class Blade : Item
     {
+        private double speed;
+        private double control;
+        private double stiffness;
+        private double hardness;
+        private double consistency;
+        private double overall;
         public int Id { get; set; }
-        public double Speed { get; set; }
-        public double Control { get; set; }
-        public double Stiffness { get; set; }
-        public double Hardness { get; set; }
-        public double Consistency { get; set; }
-        public double Overall { get; set; }        
+
+        public double Speed
+        {
+            get => speed;
+            set => speed = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Control
+        {
+            get => control;
+            set => control = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Stiffness
+        {
+            get => stiffness;
+            set => stiffness = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Hardness
+        {
+            get => hardness;
+            set => hardness = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Consistency
+        {
+            get => consistency;
+            set => consistency = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
+
+        public double Overall
+        {
+            get => overall;
+            set => overall = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+        }
 
         public Blade() { }
-        //public Blade(MySqlDataReader reader)
-        //{
-        //    Id = reader.GetInt32(0);
-        //    Url = reader.GetString(1);
-        //    Producer_ID = reader.GetInt32(2);
-        //    Name = reader.GetString(3);
-        //    Speed = reader.GetDouble(4);
-        //    Control = reader.GetDouble(5);
-        //    Stiffness = reader.GetDouble(6);
-        //    Hardness = reader.GetDouble(7);
-        //    Consistency = reader.GetDouble(8);
-        //    Overall = reader.GetDouble(9);
-        //    Ratings = reader.GetInt32(10);
-        //}
+
+        public Blade(SqlDataReader sdr) : base(sdr)
+        {
+            Id = sdr.GetInt32(5);
+            Speed =  sdr.GetDouble(7);
+            Control = sdr.GetDouble(8);
+            Stiffness = sdr.GetDouble(9);
+            Hardness = sdr.GetDouble(10);
+            Consistency = sdr.GetDouble(11);
+            Overall = sdr.GetDouble(12);
+        }
     }
 }

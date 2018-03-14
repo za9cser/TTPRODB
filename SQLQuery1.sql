@@ -1,0 +1,1 @@
+﻿SELECT * FROM Item inner JOIN Rubber as inventory ON Item.ID = inventory.Item_ID WHERE (inventory.Speed >=8.0 AND inventory.Speed <= 9.0) AND Item.Producer_ID IN (3,7,16) ORDER BY Item.Producer_ID

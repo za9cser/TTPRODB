@@ -62,7 +62,12 @@ namespace TTPRODB.TTPRODBExecution.Filters
 
         public SqlParameter[] MakeQuery(out string query)
         {
-            throw new NotImplementedException();
+            query = " AND Ratings >= @ratingsCount";
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@ratingsCount", RatingCount)
+            };
+            return parameters;
         }
     }
 }

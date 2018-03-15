@@ -79,16 +79,13 @@ namespace TTPRODB.DatabaseCommunication
                 }
 
                 // if database created, open connection to it and create structure
-                // load and execute sql script to create database's structure and add foreign keys
+                // load and execute sql script to create database's structure
                 using (var connection = new SqlConnection(DbConnectionString))
                 {
                     connection.Open();
                     using (var cmd = connection.CreateCommand())
                     {
                         cmd.CommandText = Resources.DbStructure.CreateTables;
-                        cmd.ExecuteNonQuery();
-
-                        cmd.CommandText = Resources.DbStructure.AddForeignKeys;
                         cmd.ExecuteNonQuery();
                     }
                 }

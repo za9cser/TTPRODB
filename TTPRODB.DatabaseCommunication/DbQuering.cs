@@ -279,6 +279,13 @@ namespace TTPRODB.DatabaseCommunication
             }
         }
 
+
+        /// <summary>
+        /// Gets inventory by name
+        /// </summary>
+        /// <param name="inventoryName">inventory Name</param>
+        /// <param name="inventoryType">inventory type</param>
+        /// <returns></returns>
         public static List<dynamic> GetInventoryByName(string inventoryName, Type inventoryType)
         {
             List<dynamic> items = new List<dynamic>();
@@ -298,6 +305,43 @@ namespace TTPRODB.DatabaseCommunication
                     while (sqlDataReader.Read())
                     {
                         object tempItem = constructorInfo.Invoke(new[] {sqlDataReader});
+                        dynamic item = Convert.ChangeType(tempItem, inventoryType);
+                        items.Add(item);
+                    }
+                }
+            }
+
+            if (items.Count == 0)
+            {
+                return null;
+            }
+            return items;
+        }
+
+
+        /// <summary>
+        /// Gets inventory from faivorites
+        /// </summary>
+        /// <param name="inventoryType">invetory type</param>
+        /// <returns></returns>
+        public static List<dynamic> GetFavorites(Type inventoryType)
+        {
+            List<dynamic> items = new List<dynamic>();
+            using (var connection = new SqlConnection(DbConnect.DbConnectionString))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText =
+                        $"SELECT * FROM Item inner JOIN {inventoryType.Name} as inventory ON Item.Id = inventory.Item_ID WHERE Item.ID IN (SELECT Item_ID FROM Favorites)";
+                    SqlDataReader sqlDataReader = cmd.ExecuteReader();
+
+                    ConstructorInfo constructorInfo = inventoryType.GetConstructor(new[] { typeof(SqlDataReader) });
+
+                    while (sqlDataReader.Read())
+                    {
+                        object tempItem = constructorInfo.Invoke(new[] { sqlDataReader });
                         dynamic item = Convert.ChangeType(tempItem, inventoryType);
                         items.Add(item);
                     }

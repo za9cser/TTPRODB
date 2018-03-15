@@ -61,31 +61,12 @@ namespace TTPRODB.DatabaseCommunication.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ALTER TABLE Item
-        ///ADD FOREIGN KEY (Producer_ID) REFERENCES Producer(ID);
-        ///
-        ///ALTER TABLE Rubber
-        ///ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);
-        ///
-        ///ALTER TABLE Blade
-        ///ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);
-        ///
-        ///ALTER TABLE Pips
-        ///ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);.
-        /// </summary>
-        internal static string AddForeignKeys {
-            get {
-                return ResourceManager.GetString("AddForeignKeys", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to CREATE TABLE Item
         ///(
         ///    ID int NOT NULL PRIMARY KEY,
         ///    Name text NOT NULL,
         ///	Url text NOT NULL,
-        ///    Producer_ID int NOT NULL,
+        ///    Producer_ID int NOT NULL FOREIGN KEY REFERENCES Producer(ID),
         ///	Ratings int NOT NULL,	
         ///);
         ///
@@ -98,16 +79,13 @@ namespace TTPRODB.DatabaseCommunication.Resources {
         ///CREATE TABLE Rubber
         ///(
         ///    ID int NOT NULL PRIMARY KEY,
-        ///    Item_ID int NOT NULL,
+        ///    Item_ID int NOT NULL FOREIGN KEY REFERENCES Item(ID),
         ///	Speed float,
         ///    Spin float,
         ///    Control float,
         ///    Tackiness float,
         ///    Weight float,
-        ///    Hardness float,
-        ///    Gears float,
-        ///    ThrowAngle float,
-        ///    Consistency f [rest of string was truncated]&quot;;.
+        ///    Hardnes [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CreateTables {
             get {

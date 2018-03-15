@@ -14,7 +14,7 @@
         <Setter Property="Width" Value="auto"/>
         <Setter Property="EnableRowVirtualization" Value="False"/>
         <Setter Property="EnableColumnVirtualization" Value="False"/>
-        <Setter Property="Margin" Value="10,0,0,10"/>
+        <Setter Property="Margin" Value="10,10,0,10"/>
         <Setter Property="Height" Value="auto"/>
         <Setter Property="AlternatingRowBackground" Value="{StaticResource RowCollor}"/>
         <Setter Property="AlternationCount" Value="2"></Setter>

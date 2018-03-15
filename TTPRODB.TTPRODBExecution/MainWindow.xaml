@@ -35,7 +35,7 @@
             </StackPanel>
                 
         <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-            <StackPanel Name="CharacteristicPanel" MaxHeight="300" CanVerticallyScroll="True"/>
+            <StackPanel Name="CharacteristicPanel" MaxHeight="400" CanVerticallyScroll="True"/>
         </ScrollViewer>
             <Button Name="FilterButton" Content="Filter" Style="{StaticResource ButtonStyle}" Height="25" Click="FilterButtonOnClick" Margin="0,10,0,0"/>
         </StackPanel>

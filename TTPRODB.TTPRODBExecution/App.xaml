@@ -7,7 +7,7 @@
          <ResourceDictionary>
              <ResourceDictionary.MergedDictionaries>
                  <ResourceDictionary Source="ResourceDictionaries/ResultTableStyle.xaml"/>
-                 <ResourceDictionary Source="ResourceDictionaries/BottomPanelStyle.xaml"/>
+                 <ResourceDictionary Source="ResourceDictionaries/ScrollViewerTemplate.xaml"/>
                  <ResourceDictionary Source="ResourceDictionaries/FilterStyle.xaml"/>
                  <ResourceDictionary Source="ResourceDictionaries/BrushesDictionary.xaml"/>
                  <ResourceDictionary Source="ResourceDictionaries/ButtonStyle.xaml"/>

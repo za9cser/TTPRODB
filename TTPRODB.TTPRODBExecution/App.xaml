@@ -9,6 +9,8 @@
                  <ResourceDictionary Source="ResourceDictionaries/ResultTableStyle.xaml"/>
                  <ResourceDictionary Source="ResourceDictionaries/BottomPanelStyle.xaml"/>
                  <ResourceDictionary Source="ResourceDictionaries/FilterStyle.xaml"/>
+                 <ResourceDictionary Source="ResourceDictionaries/BrushesDictionary.xaml"/>
+                 <ResourceDictionary Source="ResourceDictionaries/ButtonStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
          </ResourceDictionary>
     </Application.Resources>

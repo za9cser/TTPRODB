@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TTPRODB.TTPRODBExecution.Filters"
         mc:Ignorable="d"
+        Background="{StaticResource DefailtBackgroundColorBrush}"
         Title="MainWindow" Height="800" Width="1050">
     <Grid Name="ContentGrid">
         <Grid.RowDefinitions>
@@ -21,10 +22,8 @@
         <StackPanel Name="SearchPanel" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Height="25" Margin="10,10,0,0" >
             <TextBox Name="SearchTextBox" Width="250" />
             <ComboBox Name="InventorySearchComboBox" SelectedIndex="0" Background="White"
-                        ItemsSource="{Binding Path=InvetoryTypeArray}" Width="90">
-                
-            </ComboBox>
-            <Button Name="SearchButton" Margin="10,0,0,0" Content="Search" Click="SearchButtonOnClick"/>
+                        ItemsSource="{Binding Path=InvetoryTypeArray}" Width="90"/>
+            <Button Name="SearchButton" Content="Search" Width="50" Style="{StaticResource ButtonStyle}" Click="SearchButtonOnClick"/>
         </StackPanel>
 
         <StackPanel Name="LeftSidePanel" Grid.Row="2" VerticalAlignment="Top" Margin="10,10,0,0">
@@ -38,7 +37,7 @@
         <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto">
             <StackPanel Name="CharacteristicPanel" MaxHeight="300" CanVerticallyScroll="True"/>
         </ScrollViewer>
-            <Button Name="FilterButton" Content="Filter"  Height="25" Click="FilterButtonOnClick" Margin="0,10,0,0"/>
+            <Button Name="FilterButton" Content="Filter" Style="{StaticResource ButtonStyle}" Height="25" Click="FilterButtonOnClick" Margin="0,10,0,0"/>
         </StackPanel>
 
 
@@ -47,23 +46,9 @@
                     Grid.Row="3"
                     Grid.ColumnSpan="2" 
                     Background="#0096fb">
-            <Button Name="SearchBotomBtn" Style="{StaticResource ResourceKey=BottomPanelStyle}" Margin="10,10,0,10">
-                <StackPanel Name="SearchBottomPnl" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Label Content="Поиск" Style="{StaticResource ResourceKey=ButttonForeground1}"/>
-                </StackPanel>
-            </Button>
-            <Button Name="CompareBtn" Style="{StaticResource ResourceKey=BottomPanelStyle}" Margin="10,10,0,10">
-                <StackPanel Name="ComparePnl" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Label Content="Сравнение" Style="{StaticResource ResourceKey=ButttonForeground1}"/>
-                    <Label Content="14" Style="{StaticResource ResourceKey=ButttonForeground2}"/>
-                </StackPanel>
-            </Button>
-            <Button Name="FavoriteBtn" Style="{StaticResource ResourceKey=BottomPanelStyle}" Margin="10,10,0,10">
-                <StackPanel Name="FavoritePnl" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Label Content="Закладки" Style="{StaticResource ResourceKey=ButttonForeground1}"/>
-                    <Label Content="0" Style="{StaticResource ResourceKey=ButttonForeground2}"/>
-                </StackPanel>
-            </Button>
+            <Button Name="SearchBotomButton" Content="Search" Style="{StaticResource ResourceKey=ButtonStyle}" Margin="10,10,0,10" Width="50"/>
+            <Button Name="FavoritesButton" Content="Favorites" Width="60" Style="{StaticResource ResourceKey=ButtonStyle}" Margin="10,10,0,10"/>
+            <Button Name="CompareButton" Content="Compare"  Width="60" Style="{StaticResource ResourceKey=ButtonStyle}" Margin="10,10,0,10"/>
             <Button Name="UpdateBtn" VerticalAlignment="Bottom"/>
         </StackPanel>
 

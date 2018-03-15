@@ -6,11 +6,11 @@
              xmlns:local="clr-namespace:TTPRODB.TTPRODBExecution.Filters"
              mc:Ignorable="d" 
              Height="auto" d:DesignWidth="300">
-    <Border Style="{StaticResource ResourceKey=FilterBorderStyle}">
+    <Border Style="{StaticResource ResourceKey=FilterBorderStyle}" Padding="0,0,0,10">
         <StackPanel>
             <TextBlock Text="Producer" Style="{StaticResource ResourceKey=FilterTitleStyle}"/>
             <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto">
-                <StackPanel Name="ProducersStackPanel" MaxHeight="150" />
+                <StackPanel Name="ProducersStackPanel" MaxHeight="150"/>
             </ScrollViewer>
         </StackPanel>
     </Border>

@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    >
+    <!--Brushes-->
+    <!--Background Brushes-->
+    <!--Default BackGround-->
+    <SolidColorBrush x:Key="DefailtBackgroundColorBrush" Color="#FFF2FAFF"/>
+    <!--Default Button Background-->
+    <SolidColorBrush x:Key="DefaultButtonBackgroundColorBrush" Color="#0096fb"/>
+    <!--Mouse over brush-->
+    <SolidColorBrush x:Key="MouseOverBackgroundColorBrush" Color="#FD9E11"/>
+    <!--Mouse down brush-->
+    <SolidColorBrush x:Key="MouseDownBackgroundColorBrush" Color="#FFD48002"/>
+
+    <!--Border Brushes-->
+    <SolidColorBrush x:Key="DefaultBorderColorBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="DefaultButtonBorderColorBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="MouseOverBorderColorBrush" Color="#FD9E11"/>
+    <SolidColorBrush x:Key="MouseDownBorderColorBrush" Color="#D48002"/>
+    <SolidColorBrush x:Key="SectionBorderBrush" Color="#ffcc80"/>
+
+
+</ResourceDictionary>

@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using TTPRODB.BuisnessLogic.Entities;
 using TTPRODB.DatabaseCommunication;
 using TTPRODB.TTPRODBExecution.Filters;
@@ -58,19 +59,25 @@ namespace TTPRODB.TTPRODBExecution
             resultTables = new DataGrid[characteristics.GetLength(0)];
             for (int i = 0; i < characteristics.GetLength(0); i++)
             {
-                
+                // create data grid and set style
                 resultTables[i] = new DataGrid();
                 //resultTables[i].ColumnHeaderStyle = (Style) Application.Current.Resources["DataGridHeaderStyle"];
                 resultTables[i].Style = (Style) Application.Current.Resources["DataGridStyle"];
                 resultTables[i].RowStyle = (Style) Application.Current.Resources["DataGridRowStyle"];
                 resultTables[i].CellStyle = (Style) Application.Current.Resources["DataGridCellStyle"];
                 resultTables[i].AutoGenerateColumns = false;
+                
+                // add columns
+                Button favoritesButton = CreateButtonForResultTable();
+                // name column
                 resultTables[i].Columns.Add(new DataGridTextColumn()
                     { Header = "Name", Binding = new Binding("Name") });
                 
+                // ratings column
                 resultTables[i].Columns.Add(new DataGridTextColumn()
                     { Header = "Ratings", Binding = new Binding("Ratings") });
                 
+                // charcteristic column
                 foreach (string name in characteristics[i])
                 {
                     resultTables[i].Columns.Add(new DataGridTextColumn()
@@ -78,6 +85,7 @@ namespace TTPRODB.TTPRODBExecution
                     
                 }
 
+                // columns for inventory type
                 switch (i)
                 {
                     // Rubber
@@ -96,11 +104,30 @@ namespace TTPRODB.TTPRODBExecution
                         
                         break;
                 }
-                Grid.SetRow(resultTables[i], 2);
-                Grid.SetColumn(resultTables[i], 1);
             }
         }
 
+        // create button for result table
+        private Button CreateButtonForResultTable()
+        {
+            Button button = new Button()
+            {
+                Width = 16,
+                Height = 16,
+                Background = Brushes.Transparent
+            };
+            button.Click += DataGridButtonClick;
+            button.Content = "F";
+
+            return button;
+        }
+
+        private void DataGridButtonClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        // enable/disable comtrols when database updates
         public void UpdateMode(Visibility contentVisibility)
         {
             SearchPanel.Visibility = contentVisibility;
@@ -123,6 +150,7 @@ namespace TTPRODB.TTPRODBExecution
             };
         }
 
+        // predicate to select only double characteristic
         bool SelectDouble(PropertyInfo x)
         {
             return x.PropertyType == typeof(double);
@@ -138,15 +166,19 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
+        // builds filter for inventory type
         private void BuildFilters(int selectedIndex)
         {
+            // clear existed filters
             CharacteristicPanel.Children.Clear();
             
+            // add characteristic filters
             foreach (string characteristic in characteristics[selectedIndex])
             {
                 CharacteristicPanel.Children.Add(new CharacteristicFilter(characteristic));
             }
 
+            // filters for inventory type
             switch (selectedIndex)
             {
                 // Rubber
@@ -159,17 +191,21 @@ namespace TTPRODB.TTPRODBExecution
                     break;
             }
 
+            // add ratings count filter
             CharacteristicPanel.Children.Add(new RatingsFilter());
         }
 
+        // click on seearch button
         private void SearchButtonOnClick(object sender, RoutedEventArgs e)
         {
             try
             {
+                // clear results panel
                 ClearResultColumn();
 
                 // get items
                 List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
+                // if nothing found by query show message
                 if (items == null)
                 {
                     ShowNotFoundMessage();
@@ -191,6 +227,7 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
+        // adds a not found by query messsage to result panel
         private void ShowNotFoundMessage()
         {
             Grid.SetRow(notFoundMessageLabel, 2);
@@ -198,6 +235,7 @@ namespace TTPRODB.TTPRODBExecution
             ContentGrid.Children.Add(notFoundMessageLabel);
         }
 
+        // clears results panel
         private void ClearResultColumn()
         {
             var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
@@ -207,8 +245,10 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
+        // click on filter button
         private void FilterButtonOnClick(object sender, RoutedEventArgs e)
         {
+            // // clear results panel
             ClearResultColumn();
             List<dynamic> items = new List<dynamic>();
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
@@ -287,7 +327,6 @@ namespace TTPRODB.TTPRODBExecution
             Grid.SetRow(table, 2);
             Grid.SetColumn(table, 1);
             ContentGrid.Children.Add(table);
-
         }
     }
 }

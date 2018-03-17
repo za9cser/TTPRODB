@@ -66,9 +66,11 @@ namespace TTPRODB.TTPRODBExecution
                 resultTables[i].RowStyle = (Style) Application.Current.Resources["DataGridRowStyle"];
                 resultTables[i].CellStyle = (Style) Application.Current.Resources["DataGridCellStyle"];
                 resultTables[i].AutoGenerateColumns = false;
-                
+
                 // add columns
-                Button favoritesButton = CreateButtonForResultTable();
+                // favorites column
+                DataGridTemplateColumn favoritesColumn = CreateColumn();
+                resultTables[i].Columns.Add(favoritesColumn);
                 // name column
                 resultTables[i].Columns.Add(new DataGridTextColumn()
                     { Header = "Name", Binding = new Binding("Name") });
@@ -108,18 +110,15 @@ namespace TTPRODB.TTPRODBExecution
         }
 
         // create button for result table
-        private Button CreateButtonForResultTable()
+        private DataGridTemplateColumn CreateColumn()
         {
-            Button button = new Button()
-            {
-                Width = 16,
-                Height = 16,
-                Background = Brushes.Transparent
-            };
-            button.Click += DataGridButtonClick;
-            button.Content = "F";
-
-            return button;
+            DataGridTemplateColumn column = new DataGridTemplateColumn();
+            FrameworkElementFactory image = new FrameworkElementFactory(typeof(Image));
+            image.SetValue(Image.StyleProperty, Application.Current.Resources["FavoritesImageStyle"]);
+            DataTemplate cellTemplate = new DataTemplate();
+            cellTemplate.VisualTree = image;
+            column.CellTemplate = cellTemplate;
+            return column;
         }
 
         private void DataGridButtonClick(object sender, RoutedEventArgs e)

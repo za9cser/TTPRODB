@@ -38,5 +38,16 @@
         <Setter Property="FontStyle" Value="{StaticResource HeaderFontColor}"/>
         <Setter Property="TextBlock.TextAlignment" Value="Center"/>
     </Style>
+    
+    <Style x:Key="FavoritesImageStyle" TargetType="Image">
+        <Setter Property="Source" Value="/Images/BookmarkEmpty.png"/>
+        <Setter Property="Width" Value="16"/>
+        <Setter Property="Height" Value="16"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=InFaivorites}" Value="true">
+                <Setter Property="Source" Value="/Images/BookmarkFull.png"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 
 </ResourceDictionary>

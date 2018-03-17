@@ -51,6 +51,8 @@ namespace TTPRODB.BuisnessLogic.Entities
             set => overall = Math.Round(value, 1, MidpointRounding.AwayFromZero);
         }
 
+        public bool InFavorites { get; set; }
+
         public Blade() { }
 
         public Blade(SqlDataReader sdr) : base(sdr)

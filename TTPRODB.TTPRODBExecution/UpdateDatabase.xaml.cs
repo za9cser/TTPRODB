@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TTPRODB.BuisnessLogic;
 using TTPRODB.BuisnessLogic.Entities;
+using TTPRODB.TTPRODBExecution.Filters;
 using static TTPRODB.DatabaseCommunication.DbQuering;
 
 namespace TTPRODB.TTPRODBExecution
@@ -49,7 +50,10 @@ namespace TTPRODB.TTPRODBExecution
             info.Content = "Готово";
             MainWindow hwnd = App.Current.MainWindow as MainWindow;
             hwnd.UpdateMode(Visibility.Visible);
-            hwnd.ContentGrid.Children.Remove(this);
+            if (hwnd.InventoryPanel.Children.OfType<ProducersFilter>().FirstOrDefault() == null)
+            {
+                hwnd.InitializeUI();
+            }
         }
 
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)

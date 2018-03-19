@@ -29,19 +29,25 @@ namespace TTPRODB.TTPRODBExecution
         private ViewMode mode = ViewMode.Search;
         private Label notFoundMessageLabel;
 
-        private ProducersFilter ProducersFilterControl;
+        public ProducersFilter ProducersFilterControl;
+
         public MainWindow()
         {
             InitializeComponent();
-            
+
             if (!DbConnect.ValidateDatabase())
             {
-                var updateDatabase = UpdateMode(Visibility.Collapsed);
-                updateDatabase.RunUpdate();
+                UpdateMode(Visibility.Collapsed);
+                RunUpdate();
                 return;
             }
+            InitializeUI();
+        }
+
+        public void InitializeUI()
+        {
             ProducersFilterControl = new ProducersFilter();
-            LeftSidePanel.Children.Add(ProducersFilterControl);
+            InventoryPanel.Children.Add(ProducersFilterControl);
             notFoundMessageLabel = new Label()
             {
                 Content = "Nothing found by your query",
@@ -57,6 +63,11 @@ namespace TTPRODB.TTPRODBExecution
             InventoryFilterComboBox.ItemsSource = invetoryTypeArray;
             InventoryFilterComboBox.SelectedIndex = 0;
             InventorySearchComboBox.SelectedIndex = 0;
+            UpdateDatabase updateDatabase = ContentGrid.Children.OfType<UpdateDatabase>().FirstOrDefault();
+            if (updateDatabase != null)
+            {
+                ContentGrid.Children.Remove(updateDatabase);
+            }
         }
 
         private void InitResultTables()
@@ -107,16 +118,21 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
-        public UpdateDatabase UpdateMode(Visibility contentVisibility)
+        public void UpdateMode(Visibility contentVisibility)
         {
             SearchPanel.Visibility = contentVisibility;
             BottomPanel.Visibility = contentVisibility;
             LeftSidePanel.Visibility = contentVisibility;
+            
+        }
+
+        private void RunUpdate()
+        {
             UpdateDatabase updateDatabase = new UpdateDatabase();
             Grid.SetRow(updateDatabase, 0);
             Grid.SetColumnSpan(updateDatabase, 2);
             ContentGrid.Children.Add(updateDatabase);
-            return updateDatabase;
+            updateDatabase.RunUpdate();
         }
 
         // init string array of item characteristics

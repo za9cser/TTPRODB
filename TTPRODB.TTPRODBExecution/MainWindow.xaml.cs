@@ -182,17 +182,6 @@ namespace TTPRODB.TTPRODBExecution
             return x.PropertyType == typeof(double);
         }
 
-        // InventoryFilterComboBoxOnSelectionChanged handler to build filters
-        private void InventoryFilterComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            switch (mode)
-            {
-                case ViewMode.Search:
-                    BuildFilters(((ComboBox) sender).SelectedIndex);
-                    break;
-            }
-        }
-
         // bullds filters for specific inventory type
         private void BuildFilters(int selectedIndex)
         {
@@ -218,6 +207,37 @@ namespace TTPRODB.TTPRODBExecution
             }
 
             CharacteristicPanel.Children.Add(new RatingsFilter());
+        }
+
+        // shows "nothig found by query"
+        private void ShowNotFoundMessage()
+        {
+            Grid.SetRow(notFoundMessageLabel, 2);
+            Grid.SetColumn(notFoundMessageLabel, 1);
+            ContentGrid.Children.Add(notFoundMessageLabel);
+        }
+
+        // clears results panel
+        private void ClearResultColumn()
+        {
+            var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
+            if (item.GetType() == typeof(DataGrid) || item.GetType() == typeof(Label))
+            {
+                ContentGrid.Children.Remove(item);
+            }
+        }
+
+        #region Control handlers
+
+        // InventoryFilterComboBoxOnSelectionChanged handler to build filters
+        private void InventoryFilterComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (mode)
+            {
+                case ViewMode.Search:
+                    BuildFilters(((ComboBox)sender).SelectedIndex);
+                    break;
+            }
         }
 
         // SearchButtonOnClick handler
@@ -247,24 +267,6 @@ namespace TTPRODB.TTPRODBExecution
             {
                 Console.WriteLine(exception);
                 throw;
-            }
-        }
-
-        // shows "nothig found by query"
-        private void ShowNotFoundMessage()
-        {
-            Grid.SetRow(notFoundMessageLabel, 2);
-            Grid.SetColumn(notFoundMessageLabel, 1);
-            ContentGrid.Children.Add(notFoundMessageLabel);
-        }
-
-        // clears results panel
-        private void ClearResultColumn()
-        {
-            var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
-            if (item.GetType() == typeof(DataGrid) || item.GetType() == typeof(Label))
-            {
-                ContentGrid.Children.Remove(item);
             }
         }
 
@@ -358,5 +360,7 @@ namespace TTPRODB.TTPRODBExecution
             UpdateMode(Visibility.Collapsed);
             RunUpdate();
         }
+
+        #endregion
     }
 }

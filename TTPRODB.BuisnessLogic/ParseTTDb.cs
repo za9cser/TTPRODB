@@ -3,8 +3,10 @@ using HtmlAgilityPackExtensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using TTPRODB.BuisnessLogic.Entities;
 
 namespace TTPRODB.BuisnessLogic
@@ -27,7 +29,7 @@ namespace TTPRODB.BuisnessLogic
         public List<PropertyInfo> itemRatingsProperties = new List<PropertyInfo>();   // array of current type item's properties 
         public bool pipsFlag;
         
-        
+        object locker = new object();
 
         public ParseTTDb(Dictionary<string, Producer> producers, int itemCount)
         {
@@ -80,25 +82,31 @@ namespace TTPRODB.BuisnessLogic
                 var producerId = InitializeProducer(producersDivs[i]);
                 // get items "a" tags of the producer
                 var itemsUrls = itemsTables[i].Descendants("a").ToList();
-                foreach (var itemUrl in itemsUrls)
+                Parallel.ForEach(itemsUrls, (itemUrl) =>
+                //foreach (HtmlNode itemUrl in itemsUrls)
                 {
                     // get full item's url
                     url = site + itemUrl.Attributes["href"].Value;
                     dynamic item = ParseItem(url, producerId);
-                    if (!itemList.ContainsKey(item.Name))
+                    lock (locker)
                     {
-                        item.Id = ++currentItemId;
-                        item.ItemId = ++allItemId;
-                        dataToSave.ItemsToInsert.Add(item);
-                    }
-                    else if (itemList[item.name].Ratings != item.Ratings)
-                    {
-                        dataToSave.ItemsToUpdate.Add(item);
-                    }
-                    bw.ReportProgress(++counter, url);
-                }
-            }
+                        if (!itemList.ContainsKey(item.Name))
+                        {
+                            item.Id = ++currentItemId;
+                            item.ItemId = ++allItemId;
+                            dataToSave.ItemsToInsert.Add(item);
+                        }
+                        else if (itemList[item.name].Ratings != item.Ratings)
+                        {
+                            dataToSave.ItemsToUpdate.Add(item);
+                        }
 
+                        bw.ReportProgress(++counter, url);
+                    }
+
+                });
+            }
+            
             return dataToSave;
         }        
 

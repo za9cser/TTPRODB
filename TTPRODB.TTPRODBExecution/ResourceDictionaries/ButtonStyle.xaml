@@ -1,0 +1,37 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style TargetType="Button" x:Key="ButtonStyle">
+        <Setter Property="Background" Value="{StaticResource ResourceKey=DefaultButtonBackgroundColorBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource DefaultButtonBorderColorBrush}" />
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="Foreground" Value="White"></Setter>
+        <Setter Property="Margin" Value="10,0,0,0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource MouseOverBackgroundColorBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource MouseOverBorderColorBrush}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="Background" Value="{StaticResource DefaultButtonBackgroundColorBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColorBrush}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource MouseDownBackgroundColorBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource MouseDownBorderColorBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TTPRODB.BuisnessLogic;
 using TTPRODB.BuisnessLogic.Entities;
+using TTPRODB.TTPRODBExecution.Filters;
 using static TTPRODB.DatabaseCommunication.DbQuering;
 
 namespace TTPRODB.TTPRODBExecution
@@ -42,7 +43,6 @@ namespace TTPRODB.TTPRODBExecution
             bw.DoWork += bw_DoWork;                     // метод фонового потока
             bw.ProgressChanged += bw_ProgressChanged;   // изменение UI
             bw.RunWorkerCompleted += bw_RunWorkerCompleted; // поток завершен
-            bw.RunWorkerAsync();                        // запускаем BG worker 
         }
 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -50,7 +50,10 @@ namespace TTPRODB.TTPRODBExecution
             info.Content = "Готово";
             MainWindow hwnd = App.Current.MainWindow as MainWindow;
             hwnd.UpdateMode(Visibility.Visible);
-            hwnd.ContentGrid.Children.Remove(this);
+            if (hwnd.InventoryPanel.Children.OfType<ProducersFilter>().FirstOrDefault() == null)
+            {
+                hwnd.InitializeUI();
+            }
         }
 
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -75,7 +78,13 @@ namespace TTPRODB.TTPRODBExecution
             ParseTTDb parseTTDb = new ParseTTDb(GetAllProducers(), GetItemCount());
 
             DataToSave[] dataToSave = new DataToSave[parseTTDb.Pages.Length];
-            Dictionary<string, dynamic>[] invenoryList = { GetAllInventory<Blade>(), GetAllInventory<Rubber>(), GetAllInventory<Pips>() };
+
+            Dictionary<string, dynamic>[] invenoryList =
+                {
+                    GetAllInventory(parseTTDb.Types[0]), GetAllInventory(parseTTDb.Types[1]),
+                    GetAllInventory(parseTTDb.Types[2])
+                };
+            
             for (int i = 0; i < parseTTDb.Pages.Length; i++)
             {
                 bw.ReportProgress(0, parseTTDb.Pages[i] + " parsing");
@@ -94,5 +103,9 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
+        public void RunUpdate()
+        {
+            bw.RunWorkerAsync();
+        }
     }
 }

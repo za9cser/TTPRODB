@@ -49,7 +49,7 @@ namespace TTPRODB.DatabaseCommunication
             return producers;
         }
 
-        public static Dictionary<string, dynamic> GetAllInventory<T>()
+        public static Dictionary<string, dynamic> GetAllInventory(Type inventoryType)
         {
             Dictionary<string, dynamic> items = new Dictionary<string, dynamic>();
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
@@ -57,13 +57,14 @@ namespace TTPRODB.DatabaseCommunication
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    Type inventoryType = typeof(T);
-                    cmd.CommandText = $"SELECT * FROM Item inner JOIN {inventoryType.Name} ON Item.ID = inv.Item_ID";
+                    
+                    cmd.CommandText = $"SELECT * FROM Item inner JOIN {inventoryType.Name} as inv ON Item.ID = inv.Item_ID";
                     ConstructorInfo itemConstructor = inventoryType.GetConstructor(new[] {typeof(SqlDataReader)});
                     SqlDataReader sdr = cmd.ExecuteReader();
                     while (sdr.Read())
                     {
-                        dynamic item = (T) itemConstructor.Invoke(new object[] {sdr});
+                        object tempItem = itemConstructor.Invoke(new object[] {sdr});
+                        dynamic item = Convert.ChangeType(tempItem, inventoryType);
                         items.Add(item.Name, item);
                     }
                 }

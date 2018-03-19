@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -68,6 +69,8 @@ namespace TTPRODB.TTPRODBExecution
             {
                 ContentGrid.Children.Remove(updateDatabase);
             }
+
+            GetDbUpdateDate();
         }
 
         private void InitResultTables()
@@ -120,10 +123,19 @@ namespace TTPRODB.TTPRODBExecution
 
         public void UpdateMode(Visibility contentVisibility)
         {
-            SearchPanel.Visibility = contentVisibility;
+            FirstContentRow.Visibility = contentVisibility;
             BottomPanel.Visibility = contentVisibility;
             LeftSidePanel.Visibility = contentVisibility;
-            
+            GetDbUpdateDate();
+        }
+
+        private void GetDbUpdateDate()
+        {
+            string outputFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string mdfFilename = "TTPRODB.mdf";
+            string dbFileName = Path.Combine(outputFolder, mdfFilename);
+            DateTime updateDateTime = File.GetLastWriteTime(dbFileName);
+            UpdateDateTextBlock.Text = updateDateTime.ToShortDateString();
         }
 
         private void RunUpdate()
@@ -310,7 +322,12 @@ namespace TTPRODB.TTPRODBExecution
             Grid.SetRow(table, 2);
             Grid.SetColumn(table, 1);
             ContentGrid.Children.Add(table);
+        }
 
+        private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            UpdateMode(Visibility.Collapsed);
+            RunUpdate();
         }
     }
 }

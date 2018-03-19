@@ -63,9 +63,22 @@ namespace TTPRODB.DatabaseCommunication
                     SqlDataReader sdr = cmd.ExecuteReader();
                     while (sdr.Read())
                     {
-                        object tempItem = itemConstructor.Invoke(new object[] {sdr});
-                        dynamic item = Convert.ChangeType(tempItem, inventoryType);
-                        items.Add(item.Name, item);
+                        dynamic item="";
+                        try
+                        {
+                            object tempItem = itemConstructor.Invoke(new object[] {sdr});
+                            item = Convert.ChangeType(tempItem, inventoryType);
+                            items.Add(item.Name, item);
+                        }
+                        catch (ArgumentException e)
+                        {
+                            items.Add(item.Name + "1", item);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
+                        }
                     }
                 }
             }
@@ -253,17 +266,17 @@ namespace TTPRODB.DatabaseCommunication
                     cmd.CommandType = CommandType.Text;
                     PropertyInfo[] invetoryCharacteristicProperties =
                         inventoryProperties.Where(x => x.GetType() != typeof(Int32)).ToArray();
-                    StringBuilder updateStringBuilder = new StringBuilder();
+                    StringBuilder updateStringBuilder = new StringBuilder($"UPDATE {table} SET ");
 
                     foreach (PropertyInfo invetoryCharacteristic in invetoryCharacteristicProperties)
                     {
                         updateStringBuilder.Append($"{invetoryCharacteristic.Name}=@{invetoryCharacteristic.Name},");
-                        cmd.Parameters.Add($"@{invetoryCharacteristic.Name}");
+                        cmd.Parameters.Add($"@{invetoryCharacteristic.Name}", SetSqlType(invetoryCharacteristic.PropertyType));
                     }
 
                     updateStringBuilder = updateStringBuilder.Remove(updateStringBuilder.Length - 1, 1);
                     string commandText = cmd.CommandText + updateStringBuilder;
-
+                    
                     foreach (dynamic item in itemsList)
                     {
 
@@ -272,9 +285,19 @@ namespace TTPRODB.DatabaseCommunication
                             cmd.Parameters[i].Value = invetoryCharacteristicProperties[i].GetValue(item);
                         }
 
-                        string condition = $" WHERE Name={item.Name}";
-                        cmd.CommandText = commandText + condition;
-                        cmd.ExecuteNonQuery();
+                        string condition = $" WHERE ID={item.Id};";
+                        string updateItemTableQuery = $"\nUPDATE Item SET Ratings = {item.Ratings} WHERE ID = {item.ItemId};";
+                        cmd.CommandText = commandText + condition + updateItemTableQuery;
+                        try
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
+                        }
+                        
                     }
                 }
             }

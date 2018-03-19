@@ -62,7 +62,6 @@
             <Button Name="SearchBotomButton" Content="Search" Style="{StaticResource ResourceKey=ButtonStyle}" Margin="10,10,0,10" Width="50"/>
             <Button Name="FavoritesButton" Content="Favorites" Width="60" Style="{StaticResource ResourceKey=ButtonStyle}" Margin="10,10,0,10"/>
             <Button Name="CompareButton" Content="Compare"  Width="60" Style="{StaticResource ResourceKey=ButtonStyle}" Margin="10,10,0,10"/>
-            <Button Name="UpdateBtn" VerticalAlignment="Bottom"/>
         </StackPanel>
 
     </Grid>

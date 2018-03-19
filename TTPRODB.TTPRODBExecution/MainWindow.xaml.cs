@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media.TextFormatting;
 using TTPRODB.BuisnessLogic.Entities;
 using TTPRODB.DatabaseCommunication;
 using TTPRODB.TTPRODBExecution.Filters;
@@ -45,10 +46,13 @@ namespace TTPRODB.TTPRODBExecution
             InitializeUI();
         }
 
+        // initiate ui controls
         public void InitializeUI()
         {
+            // load producers list
             ProducersFilterControl = new ProducersFilter();
             InventoryPanel.Children.Add(ProducersFilterControl);
+            // init not found message 
             notFoundMessageLabel = new Label()
             {
                 Content = "Nothing found by your query",
@@ -64,33 +68,43 @@ namespace TTPRODB.TTPRODBExecution
             InventoryFilterComboBox.ItemsSource = invetoryTypeArray;
             InventoryFilterComboBox.SelectedIndex = 0;
             InventorySearchComboBox.SelectedIndex = 0;
+
+            // check for update control
             UpdateDatabase updateDatabase = ContentGrid.Children.OfType<UpdateDatabase>().FirstOrDefault();
             if (updateDatabase != null)
             {
                 ContentGrid.Children.Remove(updateDatabase);
             }
 
+            // init database update date
             GetDbUpdateDate();
         }
 
+        // initiates result table for inventory type
         private void InitResultTables()
         {
+            // create datagrids
             resultTables = new DataGrid[characteristics.GetLength(0)];
             for (int i = 0; i < characteristics.GetLength(0); i++)
             {
                 
                 resultTables[i] = new DataGrid();
+                // set styles
                 //resultTables[i].ColumnHeaderStyle = (Style) Application.Current.Resources["DataGridHeaderStyle"];
                 resultTables[i].Style = (Style) Application.Current.Resources["DataGridStyle"];
                 resultTables[i].RowStyle = (Style) Application.Current.Resources["DataGridRowStyle"];
                 resultTables[i].CellStyle = (Style) Application.Current.Resources["DataGridCellStyle"];
                 resultTables[i].AutoGenerateColumns = false;
+
+                // name column
                 resultTables[i].Columns.Add(new DataGridTextColumn()
                     { Header = "Name", Binding = new Binding("Name") });
                 
+                // ratings column
                 resultTables[i].Columns.Add(new DataGridTextColumn()
                     { Header = "Ratings", Binding = new Binding("Ratings") });
                 
+                // init characteristics columns
                 foreach (string name in characteristics[i])
                 {
                     resultTables[i].Columns.Add(new DataGridTextColumn()
@@ -98,6 +112,7 @@ namespace TTPRODB.TTPRODBExecution
                     
                 }
 
+                // colums for inventory type
                 switch (i)
                 {
                     // Rubber
@@ -121,6 +136,7 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
+        // hide or show content
         public void UpdateMode(Visibility contentVisibility)
         {
             FirstContentRow.Visibility = contentVisibility;
@@ -129,6 +145,7 @@ namespace TTPRODB.TTPRODBExecution
             GetDbUpdateDate();
         }
 
+        // gets database date
         private void GetDbUpdateDate()
         {
             string outputFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -138,6 +155,7 @@ namespace TTPRODB.TTPRODBExecution
             UpdateDateTextBlock.Text = updateDateTime.ToShortDateString();
         }
 
+        // initiates update control and performs update action
         private void RunUpdate()
         {
             UpdateDatabase updateDatabase = new UpdateDatabase();
@@ -158,11 +176,13 @@ namespace TTPRODB.TTPRODBExecution
             };
         }
 
+        // predicat to select only double
         bool SelectDouble(PropertyInfo x)
         {
             return x.PropertyType == typeof(double);
         }
 
+        // InventoryFilterComboBoxOnSelectionChanged handler to build filters
         private void InventoryFilterComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch (mode)
@@ -173,15 +193,18 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
+        // bullds filters for specific inventory type
         private void BuildFilters(int selectedIndex)
         {
             CharacteristicPanel.Children.Clear();
             
+            // add charcteristic filters
             foreach (string characteristic in characteristics[selectedIndex])
             {
                 CharacteristicPanel.Children.Add(new CharacteristicFilter(characteristic));
             }
 
+            // filters for CultureSpecificCharacterBufferRange inventory
             switch (selectedIndex)
             {
                 // Rubber
@@ -197,6 +220,7 @@ namespace TTPRODB.TTPRODBExecution
             CharacteristicPanel.Children.Add(new RatingsFilter());
         }
 
+        // SearchButtonOnClick handler
         private void SearchButtonOnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -226,6 +250,7 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
+        // shows "nothig found by query"
         private void ShowNotFoundMessage()
         {
             Grid.SetRow(notFoundMessageLabel, 2);
@@ -233,6 +258,7 @@ namespace TTPRODB.TTPRODBExecution
             ContentGrid.Children.Add(notFoundMessageLabel);
         }
 
+        // clears results panel
         private void ClearResultColumn()
         {
             var item = ContentGrid.Children[ContentGrid.Children.Count - 1];
@@ -242,6 +268,7 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
+        // FilterButtonOnClick handler
         private void FilterButtonOnClick(object sender, RoutedEventArgs e)
         {
             ClearResultColumn();
@@ -316,6 +343,7 @@ namespace TTPRODB.TTPRODBExecution
                 return;
             }
 
+            // add datagrid to panel
             DataGrid table = resultTables[InventoryFilterComboBox.SelectedIndex];
             table.ItemsSource = null;
             table.ItemsSource = items;
@@ -324,6 +352,7 @@ namespace TTPRODB.TTPRODBExecution
             ContentGrid.Children.Add(table);
         }
 
+        // UpdateButtonOnClick
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
             UpdateMode(Visibility.Collapsed);

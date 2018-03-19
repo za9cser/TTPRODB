@@ -77,6 +77,7 @@ namespace TTPRODB.BuisnessLogic
             int counter = 0;
             currentItemId = itemList.Count;
             DataToSave dataToSave = new DataToSave();
+
             for (int i = 0; i < producersDivs.Count; i++)
             {
                 var producerId = InitializeProducer(producersDivs[i]);
@@ -90,18 +91,28 @@ namespace TTPRODB.BuisnessLogic
                     dynamic item = ParseItem(url, producerId);
                     lock (locker)
                     {
-                        if (!itemList.ContainsKey(item.Name))
+                        try
                         {
-                            item.Id = ++currentItemId;
-                            item.ItemId = ++allItemId;
-                            dataToSave.ItemsToInsert.Add(item);
-                        }
-                        else if (itemList[item.name].Ratings != item.Ratings)
-                        {
-                            dataToSave.ItemsToUpdate.Add(item);
-                        }
+                            if (!itemList.ContainsKey(item.Name))
+                            {
+                                item.Id = ++currentItemId;
+                                item.ItemId = ++allItemId;
+                                dataToSave.ItemsToInsert.Add(item);
+                            }
+                            else if (itemList[item.Name].Ratings != item.Ratings)
+                            {
+                                item.Id = itemList[item.Name].Id;
+                                item.ItemId = itemList[item.Name].ItemId;
+                                dataToSave.ItemsToUpdate.Add(item);
+                            }
 
-                        bw.ReportProgress(++counter, url);
+                            bw.ReportProgress(++counter, url);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            throw;
+                        }
                     }
 
                 });

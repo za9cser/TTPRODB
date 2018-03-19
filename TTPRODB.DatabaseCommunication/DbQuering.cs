@@ -292,11 +292,12 @@ namespace TTPRODB.DatabaseCommunication
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
             {
                 connection.Open();
-                using (var cmd = connection.CreateCommand())
+                using (SqlCommand cmd = connection.CreateCommand(), 
+                    cmdFavorites = connection.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText =
-                        $"SELECT * FROM Item inner JOIN {inventoryType.Name} as inventory ON Item.Id = inventory.Item_ID WHERE Item.Name LIKE '%'+@inventoryName+'%'";
+                        $"SELECT * FROM Item inner JOIN {inventoryType.Name} as inventory ON Item.Id = inventory.Item_ID WHERE Item.Name LIKE '%'+@inventoryName+'%'  UNION SELECT COUNT(*) FROM Favorites WHERE Item.ID = Favorites.Item_ID";
                     cmd.Parameters.AddWithValue("@inventoryName", inventoryName);
                     SqlDataReader sqlDataReader = cmd.ExecuteReader();
 
@@ -306,6 +307,7 @@ namespace TTPRODB.DatabaseCommunication
                     {
                         object tempItem = constructorInfo.Invoke(new[] {sqlDataReader});
                         dynamic item = Convert.ChangeType(tempItem, inventoryType);
+                        item.InFavorites = sqlDataReader.GetInt32(sqlDataReader.FieldCount - 1) > 0 ? true : false; 
                         items.Add(item);
                     }
                 }
@@ -353,6 +355,12 @@ namespace TTPRODB.DatabaseCommunication
                 return null;
             }
             return items;
+        }
+
+        public static bool CheckInFavorites(SqlCommand cmd, int itemId)
+        {
+            cmd.CommandText = $"SELECT COUNT(*) FROM Favorites WHERE Item_ID = {itemId}";
+            return (int)cmd.ExecuteScalar() > 0;
         }
     }
 }

@@ -253,7 +253,8 @@ namespace TTPRODB.TTPRODBExecution
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
             {
                 connection.Open();
-                using (var cmd = connection.CreateCommand())
+                using (SqlCommand cmd = connection.CreateCommand(),
+                    cmdFavorites = connection.CreateCommand())
                 {
                     cmd.CommandType = CommandType.Text;
                     string InventoryTable = invetoryTypeArray[InventoryFilterComboBox.SelectedIndex];
@@ -299,6 +300,9 @@ namespace TTPRODB.TTPRODBExecution
                     queryStringBuilder.Append(query);
                     cmd.Parameters.AddRange(parameters);
 
+                    queryStringBuilder.Append(
+                        " UNION SELECT COUNT(*) FROM Favorites WHERE Item.ID = Favorites.Item_ID");
+
                     cmd.CommandText = queryStringBuilder.ToString();
 
                     SqlDataReader sqlDataReader = cmd.ExecuteReader();
@@ -309,6 +313,7 @@ namespace TTPRODB.TTPRODBExecution
                     {
                         object tempItem = constructorInfo.Invoke(new[] { sqlDataReader });
                         dynamic item = Convert.ChangeType(tempItem, inventoryTypes[InventoryFilterComboBox.SelectedIndex]);
+                        item.InFavorites = item.InFavorites = sqlDataReader.GetInt32(sqlDataReader.FieldCount - 1) > 0 ? true : false;
                         items.Add(item);
                     }
                 }

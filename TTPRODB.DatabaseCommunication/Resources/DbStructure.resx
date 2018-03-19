@@ -169,7 +169,7 @@ CREATE TABLE Blade
 (
     ID int NOT NULL PRIMARY KEY,
     Item_ID int NOT NULL,
-	Speed int NOT NULL,
+	Speed float NOT NULL,
 	Control float NOT NULL,
 	Stiffness float NOT NULL,
 	Hardness float NOT NULL,

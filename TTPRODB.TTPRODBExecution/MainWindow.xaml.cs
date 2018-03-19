@@ -310,7 +310,6 @@ namespace TTPRODB.TTPRODBExecution
             Grid.SetRow(table, 2);
             Grid.SetColumn(table, 1);
             ContentGrid.Children.Add(table);
-
         }
     }
 }

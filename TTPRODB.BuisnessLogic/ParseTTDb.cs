@@ -77,6 +77,7 @@ namespace TTPRODB.BuisnessLogic
             int counter = 0;
             currentItemId = itemList.Count;
             DataToSave dataToSave = new DataToSave();
+
             for (int i = 0; i < producersDivs.Count; i++)
             {
                 var producerId = InitializeProducer(producersDivs[i]);

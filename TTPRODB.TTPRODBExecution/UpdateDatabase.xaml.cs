@@ -45,11 +45,14 @@ namespace TTPRODB.TTPRODBExecution
             bw.RunWorkerCompleted += bw_RunWorkerCompleted; // поток завершен
         }
 
+        // background worker completed handler
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             info.Content = "Готово";
             MainWindow hwnd = App.Current.MainWindow as MainWindow;
+            // show content
             hwnd.UpdateMode(Visibility.Visible);
+            // remove update from window
             if (hwnd.InventoryPanel.Children.OfType<ProducersFilter>().FirstOrDefault() == null)
             {
                 hwnd.InitializeUI();
@@ -73,27 +76,34 @@ namespace TTPRODB.TTPRODBExecution
             url.Content = e.UserState.ToString();
         }
 
+
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
+            // parsing instance
             ParseTTDb parseTTDb = new ParseTTDb(GetAllProducers(), GetItemCount());
 
+            
             DataToSave[] dataToSave = new DataToSave[parseTTDb.Pages.Length];
 
+            // initiate dictionries with items in database
             Dictionary<string, dynamic>[] invenoryList =
                 {
                     GetAllInventory(parseTTDb.Types[0]), GetAllInventory(parseTTDb.Types[1]),
                     GetAllInventory(parseTTDb.Types[2])
                 };
             
+            // perform parsing
             for (int i = 0; i < parseTTDb.Pages.Length; i++)
             {
                 bw.ReportProgress(0, parseTTDb.Pages[i] + " parsing");
                 dataToSave[i] = parseTTDb.ParseItems(parseTTDb.Pages[i], parseTTDb.Types[i], invenoryList[i], bw, out itemCount);
             }
 
+            // insert producers into database
             bw.ReportProgress(0, "Insert producers");
             InsertProducers(parseTTDb.ProducersToInsert);
 
+            // insert and update database
             for (int i = 0; i < dataToSave.Length; i++)
             {
                 bw.ReportProgress(0, $"Insert {parseTTDb.Pages[i]}");
@@ -103,6 +113,7 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
+        // run update proccess
         public void RunUpdate()
         {
             bw.RunWorkerAsync();

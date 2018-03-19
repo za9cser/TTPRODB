@@ -12,6 +12,10 @@ namespace TTPRODB.DatabaseCommunication
 {
     public static class DbQuering
     {
+        /// <summary>
+        /// Gets number of records in Item table
+        /// </summary>
+        /// <returns></returns>
         public static int GetItemCount()
         {
             int count;
@@ -28,6 +32,10 @@ namespace TTPRODB.DatabaseCommunication
             return count;
         }
 
+        /// <summary>
+        /// Get producers from database
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<string, Producer> GetAllProducers()
         {
             Dictionary<string, Producer> producers = new Dictionary<string, Producer>();
@@ -49,6 +57,11 @@ namespace TTPRODB.DatabaseCommunication
             return producers;
         }
 
+        /// <summary>
+        /// Gets list of inventory of specified type
+        /// </summary>
+        /// <param name="inventoryType">inventory type to get</param>
+        /// <returns></returns>
         public static Dictionary<string, dynamic> GetAllInventory(Type inventoryType)
         {
             Dictionary<string, dynamic> items = new Dictionary<string, dynamic>();
@@ -86,6 +99,10 @@ namespace TTPRODB.DatabaseCommunication
             return items;
         }
 
+        /// <summary>
+        /// Inserts new producers
+        /// </summary>
+        /// <param name="producers">list of producers to insert</param>
         public static void InsertProducers(List<Producer> producers)
         {
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
@@ -178,6 +195,7 @@ namespace TTPRODB.DatabaseCommunication
             }
         }
 
+        // sets coresponding sqldbtype to item parametr
         private static SqlDbType SetSqlType(Type itemPropertyPropertyType)
         {
             SqlDbType type = SqlDbType.Int;
@@ -200,6 +218,12 @@ namespace TTPRODB.DatabaseCommunication
             return type;
         }
 
+        /// <summary>
+        /// Build Insert qury into inventory query
+        /// </summary>
+        /// <param name="itemsList">list of items to insert</param>
+        /// <param name="cmd">SQL command instance</param>
+        /// <returns></returns>
         private static PropertyInfo[] BuidInventoryInsertQuery(List<dynamic> itemsList, SqlCommand cmd)
         {
             // Get inventory type and properties
@@ -231,6 +255,13 @@ namespace TTPRODB.DatabaseCommunication
             return inventoryProperties;
         }
 
+        /// <summary>
+        /// gets table name
+        /// </summary>
+        /// <param name="itemsList"></param>
+        /// <param name="table"></param>
+        /// <param name="inventoryProperties"></param>
+        /// <returns></returns>
         private static bool GetTableName(List<dynamic> itemsList, out string table,
             out PropertyInfo[] inventoryProperties)
         {
@@ -248,6 +279,10 @@ namespace TTPRODB.DatabaseCommunication
             return true;
         }
 
+        /// <summary>
+        /// Updates database
+        /// </summary>
+        /// <param name="itemsList">list of item to update</param>
         public static void UpdateItems(List<dynamic> itemsList)
         {
             if (itemsList.Count == 0)
@@ -260,6 +295,7 @@ namespace TTPRODB.DatabaseCommunication
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
+                    // build quey to update inventory table
                     string table;
                     PropertyInfo[] inventoryProperties;
                     GetTableName(itemsList, out table, out inventoryProperties);
@@ -285,6 +321,7 @@ namespace TTPRODB.DatabaseCommunication
                             cmd.Parameters[i].Value = invetoryCharacteristicProperties[i].GetValue(item);
                         }
 
+                        // build query to update item table
                         string condition = $" WHERE ID={item.Id};";
                         string updateItemTableQuery = $"\nUPDATE Item SET Ratings = {item.Ratings} WHERE ID = {item.ItemId};";
                         cmd.CommandText = commandText + condition + updateItemTableQuery;
@@ -303,6 +340,12 @@ namespace TTPRODB.DatabaseCommunication
             }
         }
 
+        /// <summary>
+        /// Gets inventory by name
+        /// </summary>
+        /// <param name="inventoryName">inventory name</param>
+        /// <param name="inventoryType">inventory type</param>
+        /// <returns></returns>
         public static List<dynamic> GetInventoryByName(string inventoryName, Type inventoryType)
         {
             List<dynamic> items = new List<dynamic>();

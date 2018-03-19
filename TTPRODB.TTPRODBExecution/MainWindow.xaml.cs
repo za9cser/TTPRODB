@@ -28,14 +28,20 @@ namespace TTPRODB.TTPRODBExecution
         private DataGrid[] resultTables;
         private ViewMode mode = ViewMode.Search;
         private Label notFoundMessageLabel;
+
+        private ProducersFilter ProducersFilterControl;
         public MainWindow()
         {
             InitializeComponent();
             
             if (!DbConnect.ValidateDatabase())
             {
-                UpdateMode(Visibility.Collapsed);
+                var updateDatabase = UpdateMode(Visibility.Collapsed);
+                updateDatabase.RunUpdate();
+                return;
             }
+            ProducersFilterControl = new ProducersFilter();
+            LeftSidePanel.Children.Add(ProducersFilterControl);
             notFoundMessageLabel = new Label()
             {
                 Content = "Nothing found by your query",
@@ -101,7 +107,7 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
-        public void UpdateMode(Visibility contentVisibility)
+        public UpdateDatabase UpdateMode(Visibility contentVisibility)
         {
             SearchPanel.Visibility = contentVisibility;
             BottomPanel.Visibility = contentVisibility;
@@ -110,6 +116,7 @@ namespace TTPRODB.TTPRODBExecution
             Grid.SetRow(updateDatabase, 0);
             Grid.SetColumnSpan(updateDatabase, 2);
             ContentGrid.Children.Add(updateDatabase);
+            return updateDatabase;
         }
 
         // init string array of item characteristics

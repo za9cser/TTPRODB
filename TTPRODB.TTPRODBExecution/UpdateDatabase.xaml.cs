@@ -42,7 +42,6 @@ namespace TTPRODB.TTPRODBExecution
             bw.DoWork += bw_DoWork;                     // метод фонового потока
             bw.ProgressChanged += bw_ProgressChanged;   // изменение UI
             bw.RunWorkerCompleted += bw_RunWorkerCompleted; // поток завершен
-            bw.RunWorkerAsync();                        // запускаем BG worker 
         }
 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -75,7 +74,13 @@ namespace TTPRODB.TTPRODBExecution
             ParseTTDb parseTTDb = new ParseTTDb(GetAllProducers(), GetItemCount());
 
             DataToSave[] dataToSave = new DataToSave[parseTTDb.Pages.Length];
-            Dictionary<string, dynamic>[] invenoryList = { GetAllInventory<Blade>(), GetAllInventory<Rubber>(), GetAllInventory<Pips>() };
+
+            Dictionary<string, dynamic>[] invenoryList =
+                {
+                    GetAllInventory(parseTTDb.Types[0]), GetAllInventory(parseTTDb.Types[1]),
+                    GetAllInventory(parseTTDb.Types[2])
+                };
+            
             for (int i = 0; i < parseTTDb.Pages.Length; i++)
             {
                 bw.ReportProgress(0, parseTTDb.Pages[i] + " parsing");
@@ -94,5 +99,9 @@ namespace TTPRODB.TTPRODBExecution
             }
         }
 
+        public void RunUpdate()
+        {
+            bw.RunWorkerAsync();
+        }
     }
 }

@@ -243,31 +243,27 @@ namespace TTPRODB.TTPRODBExecution
         // SearchButtonOnClick handler
         private void SearchButtonOnClick(object sender, RoutedEventArgs e)
         {
-            try
+            if (SearchTextBox.Text.Equals(String.Empty))
             {
-                ClearResultColumn();
-
-                // get items
-                List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
-                if (items == null)
-                {
-                    ShowNotFoundMessage();
-                    return;
-                }
-
-                // build table
-                DataGrid table = resultTables[InventorySearchComboBox.SelectedIndex];
-                table.ItemsSource = null;
-                table.ItemsSource = items;
-                Grid.SetRow(table, 2);
-                Grid.SetColumn(table, 1);
-                ContentGrid.Children.Add(table);
+                MessageBox.Show("Please enter the name of inventory");
             }
-            catch (Exception exception)
+            ClearResultColumn();
+
+            // get items
+            List<dynamic> items = DbQuering.GetInventoryByName(SearchTextBox.Text, inventoryTypes[InventorySearchComboBox.SelectedIndex]);
+            if (items == null)
             {
-                Console.WriteLine(exception);
-                throw;
+                ShowNotFoundMessage();
+                return;
             }
+
+            // build table
+            DataGrid table = resultTables[InventorySearchComboBox.SelectedIndex];
+            table.ItemsSource = null;
+            table.ItemsSource = items;
+            Grid.SetRow(table, 2);
+            Grid.SetColumn(table, 1);
+            ContentGrid.Children.Add(table);
         }
 
         // FilterButtonOnClick handler

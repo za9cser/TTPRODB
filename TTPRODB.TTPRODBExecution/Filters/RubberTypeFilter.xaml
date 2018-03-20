@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="TTPRODB.TTPRODBExecution.Filters.RubberTypeFilter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TTPRODB.TTPRODBExecution.Filters"
+             mc:Ignorable="d" 
+             Height="auto" Width="100" d:DesignHeight="50">
+    <Border Style="{StaticResource ResourceKey=FilterBorderStyle}" >
+        <StackPanel>
+            <TextBlock Text="Rubber type" Style="{StaticResource ResourceKey=FilterTitleStyle}"/>
+            <StackPanel Margin="5,0,0,0" Name="RubberTypePanel">
+                <RadioButton Name="TensorRadioButton" Content="Tensor" Checked="TensorRadioButtonOnChecked"/>
+                <RadioButton Name="AntiRadioButton" Content="Anti" Checked="AntiRadioButtonOnChecked"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

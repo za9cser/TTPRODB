@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0A86A495-9864-4B2C-BADE-0D017E0B4D91}</ProjectGuid>
+    <ProjectGuid>{E70C858A-F60B-4A52-BF09-3ED73E25274E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TTPRODB.DatabaseCommunication</RootNamespace>
-    <AssemblyName>TTPRODB.DatabaseCommunication</AssemblyName>
+    <RootNamespace>TTPRODB.BuisnessLogic</RootNamespace>
+    <AssemblyName>TTPRODB.BuisnessLogic</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,8 +31,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.7.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPackExtensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\External Libraries\HtmlAgilityPackExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,26 +50,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbConnect.cs" />
-    <Compile Include="DbQuering.cs" />
+    <Compile Include="DataToSave.cs" />
+    <Compile Include="Entities\Blade.cs" />
+    <Compile Include="Entities\Item.cs" />
+    <Compile Include="Entities\Pips.cs" />
+    <Compile Include="Entities\Producer.cs" />
+    <Compile Include="Entities\Rubber.cs" />
+    <Compile Include="ParseTTDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\DbStructure.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DbStructure.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\DbStructure.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DbStructure.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TTPRODB.BuisnessLogic\TTPRODB.BuisnessLogic.csproj">
-      <Project>{E70C858A-F60B-4A52-BF09-3ED73E25274E}</Project>
-      <Name>TTPRODB.BuisnessLogic</Name>
-    </ProjectReference>
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TTPRODB.TTPRODBExecution.Properties {
+namespace TTPRODB.DatabaseCommunication.Resources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace TTPRODB.TTPRODBExecution.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class DbStructure {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal DbStructure() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace TTPRODB.TTPRODBExecution.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TTPRODB.TTPRODBExecution.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TTPRODB.DatabaseCommunication.Resources.DbStructure", typeof(DbStructure).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,61 @@ namespace TTPRODB.TTPRODBExecution.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ALTER TABLE Item
+        ///ADD FOREIGN KEY (Producer_ID) REFERENCES Producer(ID);
+        ///
+        ///ALTER TABLE Rubber
+        ///ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);
+        ///
+        ///ALTER TABLE Blade
+        ///ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);
+        ///
+        ///ALTER TABLE Pips
+        ///ADD FOREIGN KEY (Item_ID) REFERENCES Item(ID);.
+        /// </summary>
+        internal static string AddForeignKeys {
+            get {
+                return ResourceManager.GetString("AddForeignKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CREATE TABLE Item
+        ///(
+        ///    ID int NOT NULL PRIMARY KEY,
+        ///    Name text NOT NULL,
+        ///	Url text NOT NULL,
+        ///    Producer_ID int NOT NULL,
+        ///	Ratings int NOT NULL,	
+        ///);
+        ///
+        ///CREATE TABLE Producer
+        ///(
+        ///    ID int NOT NULL PRIMARY KEY,
+        ///    Name text NOT NULL	
+        ///);
+        ///
+        ///CREATE TABLE Rubber
+        ///(
+        ///    ID int NOT NULL PRIMARY KEY,
+        ///    Item_ID int NOT NULL,
+        ///	Speed float,
+        ///    Spin float,
+        ///    Control float,
+        ///    Tackiness float,
+        ///    Weight float,
+        ///    Hardness float,
+        ///    Gears float,
+        ///    ThrowAngle float,
+        ///    Consistency f [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string CreateTables {
+            get {
+                return ResourceManager.GetString("CreateTables", resourceCulture);
             }
         }
     }

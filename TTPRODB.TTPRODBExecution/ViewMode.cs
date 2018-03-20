@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TTPRODB.DatabaseCommunication
+namespace TTPRODB.TTPRODBExecution
 {
-    public class Class1
+    public enum ViewMode
     {
+        Search, Favorites, Comparison, Bat
     }
 }

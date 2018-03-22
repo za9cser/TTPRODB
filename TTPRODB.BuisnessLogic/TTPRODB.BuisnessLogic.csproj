@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="DataToSave.cs" />
     <Compile Include="Entities\Blade.cs" />
+    <Compile Include="Entities\InventoryContext.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\Pips.cs" />
     <Compile Include="Entities\Producer.cs" />

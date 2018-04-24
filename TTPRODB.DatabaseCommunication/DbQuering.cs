@@ -379,10 +379,14 @@ namespace TTPRODB.DatabaseCommunication
             return items;
         }
 
+<<<<<<< refactor_filter_button_click
         /// <summary>
         /// 
         /// </summary>
         public static List<dynamic> GetInvetoryByFilter(Type inventoryType, SqlParameter[] producers, 
+=======
+        public static List<dynamic> GetInventoryByFiltery(Type inventoryType, SqlParameter[] producers,
+>>>>>>> local
             IEnumerable<IFilter> charachteristics, SqlParameter ratingsLimit, SqlParameter[] specialTypes)
         {
             List<dynamic> items = new List<dynamic>();
@@ -397,7 +401,11 @@ namespace TTPRODB.DatabaseCommunication
 
                     StringBuilder queryStringBuilder = new StringBuilder(
                         $"SELECT * FROM Item inner JOIN {inventoryTable} AS inventory ON Item.ID = inventory.Item_ID WHERE ");
+<<<<<<< refactor_filter_button_click
                     
+=======
+
+>>>>>>> local
                     // process producers list
                     if (producers != null)
                     {
@@ -407,6 +415,7 @@ namespace TTPRODB.DatabaseCommunication
                         cmd.Parameters.AddRange(producers);
                     }
 
+<<<<<<< refactor_filter_button_click
                     // process charachteristics list
                     // get string for each characteristic
                     //IEnumerable<string> characteristicsStrings = charachteristics.Select(c => $"{c.Title} >= {c.MakeQuery()[0].ParameterName} AND {c.Title} <= {c.MakeQuery()[1].ParameterName}");
@@ -421,6 +430,9 @@ namespace TTPRODB.DatabaseCommunication
                     queryStringBuilder.AppendFormat("Ratings >= {0}", )
 
                     }
+=======
+                }
+>>>>>>> local
             }
 
             return items;

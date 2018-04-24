@@ -379,15 +379,8 @@ namespace TTPRODB.DatabaseCommunication
             return items;
         }
 
-<<<<<<< refactor_filter_button_click
-        /// <summary>
-        /// 
-        /// </summary>
-        public static List<dynamic> GetInvetoryByFilter(Type inventoryType, SqlParameter[] producers, 
-=======
         public static List<dynamic> GetInventoryByFiltery(Type inventoryType, SqlParameter[] producers,
->>>>>>> local
-            IEnumerable<IFilter> charachteristics, SqlParameter ratingsLimit, SqlParameter[] specialTypes)
+            IEnumerable<IFilter> characteristics, SqlParameter ratingsLimit, SqlParameter[] specialTypes)
         {
             List<dynamic> items = new List<dynamic>();
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
@@ -401,11 +394,7 @@ namespace TTPRODB.DatabaseCommunication
 
                     StringBuilder queryStringBuilder = new StringBuilder(
                         $"SELECT * FROM Item inner JOIN {inventoryTable} AS inventory ON Item.ID = inventory.Item_ID WHERE ");
-<<<<<<< refactor_filter_button_click
-                    
-=======
 
->>>>>>> local
                     // process producers list
                     if (producers != null)
                     {
@@ -415,27 +404,26 @@ namespace TTPRODB.DatabaseCommunication
                         cmd.Parameters.AddRange(producers);
                     }
 
-<<<<<<< refactor_filter_button_click
-                    // process charachteristics list
-                    // get string for each characteristic
-                    //IEnumerable<string> characteristicsStrings = charachteristics.Select(c => $"{c.Title} >= {c.MakeQuery()[0].ParameterName} AND {c.Title} <= {c.MakeQuery()[1].ParameterName}");
-                    //// join strings with AND
-                    //string characteristicQuery = String.Join(" AND ", characteristicsStrings);
-                    //queryStringBuilder.AppendFormat("{0} AND ", characteristicQuery);
-                    //List<SqlParameter[]> characteristicsParams = charachteristics.Select(c => c.MakeQuery()).ToList();
-                    //cmd.Parameters.AddRange(characteristicsParams.Select(c => c[0]).ToArray());
-                    //cmd.Parameters.AddRange(characteristicsParams.Select(c => c[1]).ToArray());
-
-                    // process ratings limit
-                    queryStringBuilder.AppendFormat("Ratings >= {0}", )
-
+                    // process list of charchteristics
+                    if (characteristics != null)
+                    {
+                        IEnumerable<string> characteristicQueries = characteristics.Select(c => GetCharacteristicQuery(c, cmd.Parameters));
+                        queryStringBuilder.Append($"{String.Join(" AND ",characteristicQueries)} AND ");
                     }
-=======
+
+
                 }
->>>>>>> local
             }
 
             return items;
+        }
+
+        private static string GetCharacteristicQuery(IFilter characteristic, SqlParameterCollection parameterCollection)
+        {
+            SqlParameter[] parameters = characteristic.MakeQuery();
+            parameterCollection.Add(parameters);
+            return
+                $"{characteristic.Title} >= {parameters[0].ParameterName} AND {characteristic.Title} <= {parameters[1].ParameterName}";
         }
     }
 }

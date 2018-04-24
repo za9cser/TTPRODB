@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Windows.Controls;
+using TTPRODB.BuisnessLogic;
 using TTPRODB.BuisnessLogic.Entities;
 using TTPRODB.DatabaseCommunication;
 
@@ -15,6 +15,9 @@ namespace TTPRODB.TTPRODBExecution.Filters
     public partial class ProducersFilter : UserControl
     {
         private Dictionary<string, Producer> producers;
+
+        public string Title { get; set; } = "Producers";
+
         public ProducersFilter()
         {
             InitializeComponent();
@@ -31,7 +34,11 @@ namespace TTPRODB.TTPRODBExecution.Filters
             }
         }
 
-        public SqlParameter[] MakeQuery()
+        /// <summary>
+        /// Get selected producer Ids
+        /// </summary>
+        /// <returns>array of checked producer ids</returns>
+        public int[] GetSelectedProdusers()
         {
             // get ID of selected producers
             string[] selectedProducers = ProducersStackPanel.Children.OfType<CheckBox>().Where(x => (bool) x.IsChecked)
@@ -43,14 +50,17 @@ namespace TTPRODB.TTPRODBExecution.Filters
             }
 
             int id;
-            SqlParameter[] parameters = new SqlParameter[selectedProducers.Length];
+            int[] producerIds = new int[selectedProducers.Length];
             for (int i = 0; i < selectedProducers.Length; i++)
             {
-                id = producers[selectedProducers[i]].Id;
-                parameters[i] = new SqlParameter($"@id{i}", id);
+                producerIds[i] = producers[selectedProducers[i]].Id;
             }
 
-            return parameters;
+            return producerIds;
         }
+
+        
+
+        
     }
 }

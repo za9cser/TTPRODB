@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Data.SqlClient;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using TTPRODB.BuisnessLogic;
 using Xceed.Wpf.Toolkit;
 
 namespace TTPRODB.TTPRODBExecution.Filters
@@ -60,14 +49,16 @@ namespace TTPRODB.TTPRODBExecution.Filters
             }
         }
 
-        public SqlParameter[] MakeQuery(out string query)
+        public SqlParameter[] MakeQuery()
         {
-            query = " AND Item.Ratings >= @ratingsCount";
             SqlParameter[] parameters =
             {
                 new SqlParameter("@ratingsCount", RatingCount)
             };
+
             return parameters;
         }
+
+        public string Title { get; set; } = "Ratings";
     }
 }

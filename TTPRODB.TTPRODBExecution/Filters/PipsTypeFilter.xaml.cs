@@ -14,40 +14,37 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TTPRODB.BuisnessLogic;
 
 namespace TTPRODB.TTPRODBExecution.Filters
 {
     /// <summary>
     /// Interaction logic for PipsTypeFilter.xaml
     /// </summary>
-    public partial class PipsTypeFilter : UserControl, IFilter
+    public partial class PipsTypeFilter : UserControl
     {
         public PipsTypeFilter()
         {
             InitializeComponent();
         }
 
-        public SqlParameter[] MakeQuery(out string query)
+        public SqlParameter[] MakeQuery()
         {
+            // selected types
             string[] selectedTypes = PipsTypePanel.Children.OfType<CheckBox>().
                 Where(x => x.IsChecked == true).Select(x => x.Content.ToString()).ToArray();
             if (selectedTypes.Length == 0)
             {
-                query = string.Empty;
                 return null;
             }
 
+            // build parametrs
             SqlParameter[] parameters = new SqlParameter[selectedTypes.Length];
-            StringBuilder queryStringBuilder = new StringBuilder(" AND (");
             for (int i = 0; i < parameters.Length; i++)
             {
-                queryStringBuilder.Append($"inventory.PipsType = @pipsType{i} OR ");
                 parameters[i] = new SqlParameter($"@pipsType{i}", selectedTypes[i]);
             }
 
-            queryStringBuilder = queryStringBuilder.Remove(queryStringBuilder.Length - 4, 4);
-            queryStringBuilder.Append(")");
-            query = queryStringBuilder.ToString();
             return parameters;
         }
     }

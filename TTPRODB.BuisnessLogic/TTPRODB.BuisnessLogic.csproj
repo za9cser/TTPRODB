@@ -56,6 +56,7 @@
     <Compile Include="Entities\Pips.cs" />
     <Compile Include="Entities\Producer.cs" />
     <Compile Include="Entities\Rubber.cs" />
+    <Compile Include="IFilter.cs" />
     <Compile Include="ParseTTDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

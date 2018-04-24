@@ -79,7 +79,6 @@
     <Compile Include="Filters\CharacteristicFilter.xaml.cs">
       <DependentUpon>CharacteristicFilter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Filters\PipsTypeFilter.xaml.cs">
       <DependentUpon>PipsTypeFilter.xaml</DependentUpon>
     </Compile>

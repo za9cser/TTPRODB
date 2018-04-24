@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using TTPRODB.BuisnessLogic;
 using TTPRODB.BuisnessLogic.Entities;
 
 namespace TTPRODB.DatabaseCommunication
@@ -375,6 +376,53 @@ namespace TTPRODB.DatabaseCommunication
             {
                 return null;
             }
+            return items;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static List<dynamic> GetInvetoryByFilter(Type inventoryType, SqlParameter[] producers, 
+            IEnumerable<IFilter> charachteristics, SqlParameter ratingsLimit, SqlParameter[] specialTypes)
+        {
+            List<dynamic> items = new List<dynamic>();
+            using (var connection = new SqlConnection(DbConnect.DbConnectionString))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandType = CommandType.Text;
+                    // get name of table to search
+                    string inventoryTable = inventoryType.Name;
+
+                    StringBuilder queryStringBuilder = new StringBuilder(
+                        $"SELECT * FROM Item inner JOIN {inventoryTable} AS inventory ON Item.ID = inventory.Item_ID WHERE ");
+                    
+                    // process producers list
+                    if (producers != null)
+                    {
+                        string producersParamenters = String.Join(",", producers.Select(p => p.ParameterName));
+                        string producersQuery = $"ProducerId IN ({producersParamenters}) AND ";
+                        queryStringBuilder.Append(producersQuery);
+                        cmd.Parameters.AddRange(producers);
+                    }
+
+                    // process charachteristics list
+                    // get string for each characteristic
+                    //IEnumerable<string> characteristicsStrings = charachteristics.Select(c => $"{c.Title} >= {c.MakeQuery()[0].ParameterName} AND {c.Title} <= {c.MakeQuery()[1].ParameterName}");
+                    //// join strings with AND
+                    //string characteristicQuery = String.Join(" AND ", characteristicsStrings);
+                    //queryStringBuilder.AppendFormat("{0} AND ", characteristicQuery);
+                    //List<SqlParameter[]> characteristicsParams = charachteristics.Select(c => c.MakeQuery()).ToList();
+                    //cmd.Parameters.AddRange(characteristicsParams.Select(c => c[0]).ToArray());
+                    //cmd.Parameters.AddRange(characteristicsParams.Select(c => c[1]).ToArray());
+
+                    // process ratings limit
+                    queryStringBuilder.AppendFormat("Ratings >= {0}", )
+
+                    }
+            }
+
             return items;
         }
     }

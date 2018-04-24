@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using TTPRODB.BuisnessLogic;
 
 namespace TTPRODB.TTPRODBExecution.Filters
 {
@@ -47,18 +37,15 @@ namespace TTPRODB.TTPRODBExecution.Filters
             AntiRadioButton.IsChecked = true;
         }
 
-        public SqlParameter[] MakeQuery(out string query)
+        public SqlParameter[] MakeQuery()
         {
             RadioButton selectedType =
                 RubberTypePanel.Children.OfType<RadioButton>().FirstOrDefault(x => x.IsChecked == true);
             if (selectedType == null)
             {
-                query = String.Empty;
                 return null;
             }
-
-            query = $" AND inventory.{selectedType.Content} = @state";
-
+           
             SqlParameter[] parameters =
             {
                 new SqlParameter("@state", true)
@@ -67,5 +54,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
             
             return parameters;
         }
+
+        public string Title { get; set; } = "Rubber type";
     }
 }

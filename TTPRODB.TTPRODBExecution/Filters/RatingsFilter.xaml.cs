@@ -9,7 +9,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
     /// <summary>
     /// Interaction logic for RatingsFilter.xaml
     /// </summary>
-    public partial class RatingsFilter : UserControl, IFilter
+    public partial class RatingsFilter : UserControl
     {
         public int RatingCount
         {
@@ -48,17 +48,5 @@ namespace TTPRODB.TTPRODBExecution.Filters
                 upDown.Value = upDown.Minimum;
             }
         }
-
-        public SqlParameter[] MakeQuery()
-        {
-            SqlParameter[] parameters =
-            {
-                new SqlParameter("@ratingsCount", RatingCount)
-            };
-
-            return parameters;
-        }
-
-        public string Title { get; set; } = "Ratings";
     }
 }

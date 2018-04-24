@@ -380,7 +380,7 @@ namespace TTPRODB.DatabaseCommunication
         }
 
         public static List<dynamic> GetInventoryByFiltery(Type inventoryType, SqlParameter[] producers,
-            IEnumerable<IFilter> characteristics, SqlParameter ratingsLimit, SqlParameter[] specialTypes)
+            IEnumerable<IFilter> characteristics, int ratingsLimit, SqlParameter[] specialTypes)
         {
             List<dynamic> items = new List<dynamic>();
             using (var connection = new SqlConnection(DbConnect.DbConnectionString))
@@ -411,7 +411,8 @@ namespace TTPRODB.DatabaseCommunication
                         queryStringBuilder.Append($"{String.Join(" AND ",characteristicQueries)} AND ");
                     }
 
-
+                    // proces ratings limit
+                    queryStringBuilder.AppendFormat("Ratings >= {0}", ratingsLimit);
                 }
             }
 

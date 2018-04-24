@@ -413,6 +413,21 @@ namespace TTPRODB.DatabaseCommunication
 
                     // proces ratings limit
                     queryStringBuilder.AppendFormat("Ratings >= {0}", ratingsLimit);
+
+                    cmd.CommandText = queryStringBuilder.ToString();
+
+                    // execute query and process response
+                    SqlDataReader sqlDataReader = cmd.ExecuteReader();
+
+                    ConstructorInfo constructorInfo = inventoryType.GetConstructor(new[] { typeof(SqlDataReader) });
+
+                    while (sqlDataReader.Read())
+                    {
+                        object tempItem = constructorInfo.Invoke(new[] { sqlDataReader });
+                        dynamic item = Convert.ChangeType(tempItem, inventoryType);
+                        items.Add(item);
+                    }
+
                 }
             }
 

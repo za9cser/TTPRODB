@@ -1,7 +1,5 @@
-﻿using System.Data.SqlClient;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
-using TTPRODB.BuisnessLogic;
 using Xceed.Wpf.Toolkit;
 
 namespace TTPRODB.TTPRODBExecution.Filters

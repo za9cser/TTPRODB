@@ -9,7 +9,7 @@ namespace TTPRODB.TTPRODBExecution.Filters
     /// <summary>
     /// Interaction logic for RubberTypeFilter.xaml
     /// </summary>
-    public partial class RubberTypeFilter : UserControl, IFilter
+    public partial class RubberTypeFilter : UserControl
     {
         public RubberTypeFilter()
         {

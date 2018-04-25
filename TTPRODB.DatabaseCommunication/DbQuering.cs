@@ -388,44 +388,53 @@ namespace TTPRODB.DatabaseCommunication
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandType = CommandType.Text;
-                    // get name of table to search
-                    string inventoryTable = inventoryType.Name;
-
-                    StringBuilder queryStringBuilder = new StringBuilder(
-                        $"SELECT * FROM Item inner JOIN {inventoryTable} AS inventory ON Item.ID = inventory.Item_ID WHERE ");
-
-                    // process producers list
-                    if (producers != null)
+                    try
                     {
-                        string producersParamenters = String.Join(",", producers.Select(p => p.ParameterName));
-                        string producersQuery = $"ProducerId IN ({producersParamenters}) AND ";
-                        queryStringBuilder.Append(producersQuery);
-                        cmd.Parameters.AddRange(producers);
+                        cmd.CommandType = CommandType.Text;
+                        // get name of table to search
+                        string inventoryTable = inventoryType.Name;
+
+                        StringBuilder queryStringBuilder = new StringBuilder(
+                            $"SELECT * FROM Item inner JOIN {inventoryTable} AS inventory ON Item.ID = inventory.Item_ID WHERE ");
+
+                        // process producers list
+                        if (producers != null)
+                        {
+                            string producersParamenters = String.Join(",", producers.Select(p => p.ParameterName));
+                            string producersQuery = $"Item.Producer_ID IN ({producersParamenters}) AND ";
+                            queryStringBuilder.Append(producersQuery);
+                            cmd.Parameters.AddRange(producers);
+                        }
+
+                        // process list of charchteristics
+                        if (characteristics != null)
+                        {
+                            IEnumerable<string> characteristicQueries = characteristics.Select(c => GetCharacteristicQuery(c, cmd.Parameters));
+                            string query = String.Join(" AND ", characteristicQueries);
+                            queryStringBuilder.Append($"{query} AND ");
+                        }
+
+                        // proces ratings limit
+                        queryStringBuilder.AppendFormat("Ratings >= {0}", ratingsLimit);
+
+                        cmd.CommandText = queryStringBuilder.ToString();
+
+                        // execute query and process response
+                        SqlDataReader sqlDataReader = cmd.ExecuteReader();
+
+                        ConstructorInfo constructorInfo = inventoryType.GetConstructor(new[] { typeof(SqlDataReader) });
+
+                        while (sqlDataReader.Read())
+                        {
+                            object tempItem = constructorInfo.Invoke(new[] { sqlDataReader });
+                            dynamic item = Convert.ChangeType(tempItem, inventoryType);
+                            items.Add(item);
+                        }
                     }
-
-                    // process list of charchteristics
-                    if (characteristics != null)
+                    catch (Exception e)
                     {
-                        IEnumerable<string> characteristicQueries = characteristics.Select(c => GetCharacteristicQuery(c, cmd.Parameters));
-                        queryStringBuilder.Append($"{String.Join(" AND ",characteristicQueries)} AND ");
-                    }
-
-                    // proces ratings limit
-                    queryStringBuilder.AppendFormat("Ratings >= {0}", ratingsLimit);
-
-                    cmd.CommandText = queryStringBuilder.ToString();
-
-                    // execute query and process response
-                    SqlDataReader sqlDataReader = cmd.ExecuteReader();
-
-                    ConstructorInfo constructorInfo = inventoryType.GetConstructor(new[] { typeof(SqlDataReader) });
-
-                    while (sqlDataReader.Read())
-                    {
-                        object tempItem = constructorInfo.Invoke(new[] { sqlDataReader });
-                        dynamic item = Convert.ChangeType(tempItem, inventoryType);
-                        items.Add(item);
+                        Console.WriteLine(e);
+                        throw;
                     }
 
                 }
@@ -437,7 +446,7 @@ namespace TTPRODB.DatabaseCommunication
         private static string GetCharacteristicQuery(IFilter characteristic, SqlParameterCollection parameterCollection)
         {
             SqlParameter[] parameters = characteristic.MakeQuery();
-            parameterCollection.Add(parameters);
+            parameterCollection.AddRange(parameters);
             return
                 $"{characteristic.Title} >= {parameters[0].ParameterName} AND {characteristic.Title} <= {parameters[1].ParameterName}";
         }

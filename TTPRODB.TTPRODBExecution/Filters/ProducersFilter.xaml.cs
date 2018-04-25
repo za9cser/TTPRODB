@@ -38,10 +38,10 @@ namespace TTPRODB.TTPRODBExecution.Filters
         /// Get selected producer Ids
         /// </summary>
         /// <returns>array of checked producer ids</returns>
-        public int[] GetSelectedProdusers()
+        public SqlParameter[] GetSelectedProducers()
         {
             // get ID of selected producers
-            string[] selectedProducers = ProducersStackPanel.Children.OfType<CheckBox>().Where(x => (bool) x.IsChecked)
+            string[] selectedProducers = ProducersStackPanel.Children.OfType<CheckBox>().Where(x => (bool)x.IsChecked)
                 .Select(x => x.Content.ToString()).ToArray();
             // if producers didn't choosen return empty string
             if (selectedProducers.Length == 0)
@@ -50,17 +50,14 @@ namespace TTPRODB.TTPRODBExecution.Filters
             }
 
             int id;
-            int[] producerIds = new int[selectedProducers.Length];
+            SqlParameter[] parameters = new SqlParameter[selectedProducers.Length];
             for (int i = 0; i < selectedProducers.Length; i++)
             {
-                producerIds[i] = producers[selectedProducers[i]].Id;
+                id = producers[selectedProducers[i]].Id;
+                parameters[i] = new SqlParameter($"@id{i}", id);
             }
 
-            return producerIds;
+            return parameters;
         }
-
-        
-
-        
     }
 }

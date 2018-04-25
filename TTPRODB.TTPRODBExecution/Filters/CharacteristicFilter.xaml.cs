@@ -1,13 +1,6 @@
 ﻿using System.Data.SqlClient;
 using System.Windows.Controls;
 using System.Windows.Input;
-<<<<<<< refactor_filter_button_click
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-=======
->>>>>>> local
 using TTPRODB.BuisnessLogic;
 
 namespace TTPRODB.TTPRODBExecution.Filters
@@ -81,10 +74,6 @@ namespace TTPRODB.TTPRODBExecution.Filters
 
         public SqlParameter[] MakeQuery()
         {
-<<<<<<< refactor_filter_button_click
-=======
-            string characteristic = TitleTextBlock.Text;
->>>>>>> local
             SqlParameter[] parameters = {
                 new SqlParameter($"@{Title}lowerLimit", Value1),
                 new SqlParameter($"@{Title}upperLimit", Value2),

@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using TTPRODB.BuisnessLogic;
 using TTPRODB.BuisnessLogic.Entities;
 
 namespace TTPRODB.DatabaseCommunication
@@ -376,6 +377,98 @@ namespace TTPRODB.DatabaseCommunication
                 return null;
             }
             return items;
+        }
+
+        public static List<dynamic> GetInventoryByFiltery(Type inventoryType, SqlParameter[] producers,
+            IEnumerable<IFilter> characteristics, int ratingsLimit, IRubberType specialTypes)
+        {
+            List<dynamic> items = new List<dynamic>();
+            using (var connection = new SqlConnection(DbConnect.DbConnectionString))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    
+                    
+                    cmd.CommandType = CommandType.Text;
+                    // get name of table to search
+                    string inventoryTable = inventoryType.Name;
+
+                    StringBuilder queryStringBuilder = new StringBuilder(
+                        $"SELECT * FROM Item inner JOIN {inventoryTable} AS inventory ON Item.ID = inventory.Item_ID WHERE ");
+
+                    // process producers list
+                    if (producers != null)
+                    {
+                        string producersParamenters = String.Join(",", producers.Select(p => p.ParameterName));
+                        string producersQuery = $"Item.Producer_ID IN ({producersParamenters}) AND ";
+                        queryStringBuilder.Append(producersQuery);
+                        cmd.Parameters.AddRange(producers);
+                    }
+
+                    // process list of charchteristics
+                    if (characteristics != null)
+                    {
+                        IEnumerable<string> characteristicQueries = characteristics.Select(c => GetCharacteristicQuery(c, cmd.Parameters));
+                        string query = String.Join(" AND ", characteristicQueries);
+                        queryStringBuilder.Append($"{query} AND ");
+                    }
+
+                    // proces ratings limit
+                    queryStringBuilder.AppendFormat("Ratings >= {0}", ratingsLimit);
+
+
+                    try
+                    {
+                        switch (inventoryTable)
+                        {
+                        case "Rubber":
+
+                            queryStringBuilder.Append($" AND {specialTypes.GetRubberType()[0]}");
+                            break;
+                        case "Pips":
+                            string[] types = specialTypes.GetRubberType();
+                            SqlParameter[] typesParameters = new SqlParameter[types.Length];
+                            for (int i = 0; i < types.Length; i++)
+                            {
+                                typesParameters[i] = new SqlParameter($"@type{i}", SqlDbType.VarChar);
+                                typesParameters[i].Value = types[i];
+                            }
+
+                            cmd.Parameters.AddRange(typesParameters);
+                            string parameters = String.Join(",", typesParameters.Select(p => p.ParameterName));
+                            queryStringBuilder.Append($" AND PipsType IN ({parameters})");
+                            break;
+                        }
+                    }
+                    catch (NullReferenceException) { }
+                        
+
+                    cmd.CommandText = queryStringBuilder.ToString();
+
+                    // execute query and process response
+                    SqlDataReader sqlDataReader = cmd.ExecuteReader();
+
+                    ConstructorInfo constructorInfo = inventoryType.GetConstructor(new[] { typeof(SqlDataReader) });
+
+                    while (sqlDataReader.Read())
+                    {
+                        object tempItem = constructorInfo.Invoke(new[] { sqlDataReader });
+                        dynamic item = Convert.ChangeType(tempItem, inventoryType);
+                        items.Add(item);
+                    }
+                }
+            }
+
+            return items;
+        }
+
+        private static string GetCharacteristicQuery(IFilter characteristic, SqlParameterCollection parameterCollection)
+        {
+            SqlParameter[] parameters = characteristic.MakeQuery();
+            parameterCollection.AddRange(parameters);
+            return
+                $"{characteristic.Title} >= {parameters[0].ParameterName} AND {characteristic.Title} <= {parameters[1].ParameterName}";
         }
     }
 }

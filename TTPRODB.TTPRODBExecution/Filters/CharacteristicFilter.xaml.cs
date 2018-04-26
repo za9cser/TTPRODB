@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Data.SqlClient;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using TTPRODB.BuisnessLogic;
 
 namespace TTPRODB.TTPRODBExecution.Filters
 {
@@ -83,14 +72,11 @@ namespace TTPRODB.TTPRODBExecution.Filters
             }
         }
 
-        public SqlParameter[] MakeQuery(out string query)
+        public SqlParameter[] MakeQuery()
         {
-            string characteristic = TitleTextBlock.Text;
-            query =
-                $"inventory.{characteristic} >= @{characteristic}lowerLimit AND inventory.{characteristic} <= @{characteristic}upperLimit ";
             SqlParameter[] parameters = {
-                new SqlParameter($"@{characteristic}lowerLimit", Value1),
-                new SqlParameter($"@{characteristic}upperLimit", Value2),
+                new SqlParameter($"@{Title}lowerLimit", Value1),
+                new SqlParameter($"@{Title}upperLimit", Value2),
             };
             return parameters;
         }

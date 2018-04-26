@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:TTPRODB.TTPRODBExecution.Filters"
         mc:Ignorable="d"
         Background="{StaticResource DefailtBackgroundColorBrush}"
@@ -25,7 +26,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Name="SearchPanel" Grid.Column="0" Orientation="Horizontal" Height="25" Margin="10,10,0,0" >
-                <TextBox Name="SearchTextBox" Width="250" />
+                <xctk:WatermarkTextBox Name="SearchTextBox" Watermark="Tenergy 25" Width="250"/>
+                <!--<TextBox Name="SearchTextBox" Width="250" />-->
                 <ComboBox Name="InventorySearchComboBox" SelectedIndex="0" Background="White"
                           ItemsSource="{Binding Path=InvetoryTypeArray}" Width="90"/>
                 <Button Name="SearchButton" Content="Search" Width="50" Style="{StaticResource ButtonStyle}" Click="SearchButtonOnClick"/>

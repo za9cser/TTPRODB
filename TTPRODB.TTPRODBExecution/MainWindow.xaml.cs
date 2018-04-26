@@ -273,7 +273,10 @@ namespace TTPRODB.TTPRODBExecution
             SqlParameter[] producers = ProducersFilterControl.GetSelectedProducers();
             IEnumerable<IFilter> characteristics = CharacteristicPanel.Children.OfType<IFilter>();
             int ratingsLimit = CharacteristicPanel.Children.OfType<RatingsFilter>().First().RatingCount;
-            List<dynamic> items = DbQuering.GetInventoryByFiltery(inventoryType, producers, characteristics, ratingsLimit, null);
+
+            IRubberType rubberType = CharacteristicPanel.Children.OfType<IRubberType>().FirstOrDefault();
+
+            List<dynamic> items = DbQuering.GetInventoryByFiltery(inventoryType, producers, characteristics, ratingsLimit, rubberType);
 
             if (items.Count == 0)
             {
